@@ -15,3 +15,4 @@ public class DataController {
     return new Foo().toString();
   }
 }
+//메이븐은 컴파일과 라이브러리를 관리한다
