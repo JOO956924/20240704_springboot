@@ -12,6 +12,7 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
@@ -158,5 +159,28 @@ class MemoRepositoryTests {
     // Paging 처리 후 겨과를 담기 위한 객체 Page 사용
     Page<Memo> page = memoRepository.getListWithQuery(10L,pageable);
     page.get().forEach(memo -> System.out.println(memo));
+  }
+
+  @Test
+  public void getListwithQueryObject() {
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<Object[]> result = memoRepository.getListwithQueryObject(10L, pageable);
+    result.get().forEach(obj -> {
+      for (int i = 0; i < obj.length; i++) {
+        if (i != 0) System.out.println(",");;
+        System.out.println(obj[i]);
+      }
+      System.out.println();
+    });
+  }
+
+  @Test
+  public void getNativeResult() {
+
+    List<Memo> list = memoRepository.getNativeResult();
+    for (Memo m : list) {
+      System.out.println(m);
+    }
   }
 }
