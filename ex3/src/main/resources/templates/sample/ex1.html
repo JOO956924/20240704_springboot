@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<h1>ex1.html</h1>
+<!-- th:text="${}" ${}는 컨트롤러부터 오는 변수, 텍스트, 숫자 표현 가능-->
+<h1 th:text="${'ex1.html'}"></h1>
+<h4>Thymeleaf의 표현식</h4>
+<ul style="Link-style:none;">
+  <li>변수 또는 값 th:text"${data}"</li>
+  <li><a th:href="@{/sample/selection}">선택변수 *{ }</a></li>
+  <li>메세지 #{ }</li>
+  <li>Link URL th:href="@{}"</li>
+</ul>
+</body>
+</html>

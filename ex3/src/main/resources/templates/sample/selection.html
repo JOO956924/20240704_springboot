@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<h3>선택변수 *{ }</h3>
+<xmp>
+<div th:object="${sampleDTO}">
+  <p>
+    <span>userA ${}</span><br>
+    <span th:text="${sampleDTO.getSno()}"></span>
+    <span th:text="${sampleDTO.getFirst()}"></span>
+    <span th:text="${sampleDTO.getLast()}"></span>
+    <span th:text="${sampleDTO.getRegTime()}"></span>
+  </p>
+  <p>
+    <span>sampleDTO *{}</span><br>
+    <span th:text="*{Sno}"></span>
+    <span th:text="*{First}"></span>
+    <span th:text="*{Last}"></span>
+    <span th:text="*{RegTime}"></span>
+  </p>
+</div>
+</xmp>
+</body>
+</html>
