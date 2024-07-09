@@ -5,6 +5,16 @@
   <title>ex2</title>
 </head>
 <body>
-<h1>ex2</h1>
+<h1>ex2.html</h1>
+<ul style="list-style: none;">
+  <!--/* <li th:each="dto, state : ${list}" th:if="${dto.sno % 5 == 0}">
+      반복문에는 부가적으로 사용할 수 있는 state라는 객체가 있다.
+    [[${state.index + 1}]] : [[${dto}]]
+  </li> */-->
+  <li th:each="dto, state : ${list}">
+    <span th:if="${dto.sno%5 == 0}" th:text="${state.index}+':'+${dto}"></span>
+    <span th:unless="${dto.sno%5 == 0}" th:text="========================"></span>
+  </li>
+</ul>
 </body>
 </html>
