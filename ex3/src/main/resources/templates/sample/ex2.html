@@ -20,10 +20,19 @@
   </li> */-->
   <!--/*
   <li th:each="dto, state : ${list}" th:text="${dto.sno%5 == 0} ? ${dto.sno}"></li>
-  <li th:each="dto, state : ${list}" th:text="${dto.sno%5 == 0} ? ${dto.sno} : ${dto.first}"></li> */-->
-  <li th:each="dto, state : ${list}" th:class="${dto.sno%5 == 0}?'target'" th:text="${dto}"></li>
+  <li th:each="dto, state : ${list}" th:text="${dto.sno%5 == 0} ? ${dto.sno} : ${dto.first}"></li>
+  <li th:each="dto, state : ${list}" th:class="${dto.sno%5 == 0}?'target'" th:text="${dto}"></li>*/-->
+  <!--/*
+  <p>th:block는  별도의 태그가 필요하지 않을 때 사용. [[${}]]와 결과가 같음.</p>
+  <th:block th:each="dto, state : ${list}">
+    <li th:text="${dto.sno%5 == 0}?${dto.sno}:${dto.first}"></li>
+  </th:block>
+  */-->
+  <p>쿼리주소, path 주소</p>
+  <li th:each="dto : ${list}">
+    <a th:href="@{/sample/exView(sno=${dto.sno},first=${dto.first})}" th:text="${dto.first}"></a>
+    <a th:href="@{/sample/exView/{sno}(sno=${dto.sno})}" th:text="${dto.first}"></a>
+  </li>
 </ul>
-<h3 th:text="'dtoFlash1: ' +${dtoFlash1}"></h3>
-<h3 th:text="'result1: '+${result1}"></h3>
 </body>
 </html>
