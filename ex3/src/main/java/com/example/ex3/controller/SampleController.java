@@ -59,6 +59,7 @@ public class SampleController {
   }
   // Redirect 재전송할 경우
   // RedirectAttributes, return에 "redirect:"로 시작, return type은 String
+  // addFlashAttribute 사용
   @GetMapping("/exInline")
   public String exInline(Model model, RedirectAttributes ra) {
     log.info("exInline...........");
@@ -72,7 +73,7 @@ public class SampleController {
     ra.addAttribute("dtoRA", dto.toString());//재전송안됨
     ra.addFlashAttribute("dtoFlash", dto.toString());//재전송됨. 일회성
     ra.addFlashAttribute("result", "success");//재전송됨. 일회성
-    return "redirect:/sample/ex3";
+    return "redirect:/sample/ex3"; // redirect = controller로 재전송
   }
 
   @GetMapping("/ex3")
@@ -88,7 +89,7 @@ public class SampleController {
     ra.addAttribute("dtoRA1", dto.toString());// 전송안됨
     ra.addFlashAttribute("dtoFlash1", dto.toString());// 전송안됨
     ra.addFlashAttribute("result1", "success");// 전송안됨
-    return "/sample/ex3";
+    return "/sample/ex2"; // redirect:/ 없어서 재전송 안됨. 물리적 주소
   }
     // controller에서 넘겨주는 속성이 없다
 

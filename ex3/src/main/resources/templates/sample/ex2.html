@@ -23,5 +23,7 @@
   <li th:each="dto, state : ${list}" th:text="${dto.sno%5 == 0} ? ${dto.sno} : ${dto.first}"></li> */-->
   <li th:each="dto, state : ${list}" th:class="${dto.sno%5 == 0}?'target'" th:text="${dto}"></li>
 </ul>
+<h3 th:text="'dtoFlash1: ' +${dtoFlash1}"></h3>
+<h3 th:text="'result1: '+${result1}"></h3>
 </body>
 </html>

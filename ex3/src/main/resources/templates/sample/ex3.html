@@ -20,8 +20,8 @@
 
 <script th:inline="javascript">
   var result = [[${result}]]
-  var dto = [[${dto}]]
-  if(result == "success" alert("success")
+  var dto = [[${dtoFlash}]]
+  if(result == "success") alert("success")
   console.log(dto);
 </script>
 </body>
