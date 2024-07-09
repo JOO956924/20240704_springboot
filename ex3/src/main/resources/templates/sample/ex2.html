@@ -2,19 +2,26 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>ex2</title>
+  <title>Title</title>
+  <style>
+    .target {background-color: red;}
+  </style>
 </head>
 <body>
-<h1>ex2.html</h1>
+<h1>ex2</h1>
 <ul style="list-style: none;">
   <!--/* <li th:each="dto, state : ${list}" th:if="${dto.sno % 5 == 0}">
-      반복문에는 부가적으로 사용할 수 있는 state라는 객체가 있다.
-    [[${state.index + 1}]] : [[${dto}]]
+    &lt;!&ndash;반복문에는 부가적으로 사용할 수 있는 state라는 객체가 있다.&ndash;&gt;
+    [[${state.index}  + 1]] : [[${dto}]]
   </li> */-->
-  <li th:each="dto, state : ${list}">
+ <!--/* <li th:each="dto, state : ${list}">
     <span th:if="${dto.sno%5 == 0}" th:text="${state.index}+':'+${dto}"></span>
-    <span th:unless="${dto.sno%5 == 0}" th:text="========================"></span>
-  </li>
+    <span th:unless="${dto.sno%5 == 0}" th:text="${'========================'}"></span>
+  </li> */-->
+  <!--/*
+  <li th:each="dto, state : ${list}" th:text="${dto.sno%5 == 0} ? ${dto.sno}"></li>
+  <li th:each="dto, state : ${list}" th:text="${dto.sno%5 == 0} ? ${dto.sno} : ${dto.first}"></li> */-->
+  <li th:each="dto, state : ${list}" th:class="${dto.sno%5 == 0}?'target'" th:text="${dto}"></li>
 </ul>
 </body>
 </html>
