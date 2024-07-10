@@ -94,13 +94,9 @@ public class SampleController {
   }
   // controller에서 넘겨주는 속성이 없다
 
-  @GetMapping({"/exLayout1", "/exLayout2", "/exTemplate"})
+  @GetMapping({"/exLayout1", "/exLayout2", "/exTemplate", "/exSidebar"})
   public void exLayout1() {
     log.info("exLayout1...........");
   }
 
-  @GetMapping("exLayout3")
-  public void exLayout3() {
-    log.info("exLayout3...........");
-  }
 }
