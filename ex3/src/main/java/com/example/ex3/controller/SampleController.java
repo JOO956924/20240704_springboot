@@ -57,6 +57,7 @@ public class SampleController {
     // model은 다음페이지에 전달할 객체를 전송하는 역할
     model.addAttribute("sample", sampleDTO);
   }
+
   // Redirect 재전송할 경우
   // RedirectAttributes, return에 "redirect:"로 시작, return type은 String
   // addFlashAttribute 사용
@@ -91,6 +92,15 @@ public class SampleController {
     ra.addFlashAttribute("result1", "success");// 전송안됨
     return "/sample/ex3"; // redirect:/ 없어서 재전송 안됨. 물리적 주소
   }
-    // controller에서 넘겨주는 속성이 없다
+  // controller에서 넘겨주는 속성이 없다
 
+  @GetMapping({"/exLayout1", "/exLayout2", "/exTemplate"})
+  public void exLayout1() {
+    log.info("exLayout1...........");
+  }
+
+  @GetMapping("exLayout3")
+  public void exLayout3() {
+    log.info("exLayout3...........");
+  }
 }
