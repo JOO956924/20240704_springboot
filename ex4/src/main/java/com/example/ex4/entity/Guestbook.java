@@ -2,7 +2,6 @@ package com.example.ex4.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.Length;
 
 @Entity
 @Getter
@@ -23,4 +22,12 @@ public class Guestbook extends BasicEntity {
 
   @Column(length = 50, nullable = false)
   private String writer;
+
+  public void changeTitle(String title) {
+    this.title = title;
+  }
+
+  public void changeContent(String content) {
+    this.content = content;
+  }
 }
