@@ -3,7 +3,7 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
   <th:block th:fragment="content">
     <h1 class="mt-4">Guestbook List Page
-    <a class="btn btn-outline-primary" th:href="@{/guestbook/register}">Register</a>
+      <a class="btn btn-outline-primary" th:href="@{/guestbook/register}">Register</a>
     </h1>
     <table class="table table-striped">
       <thead>
@@ -25,19 +25,48 @@
     </table>
     <ul class="pagination h-100 justify-content-center align-items-center">
       <li class="page-item " th:if="${pageResultDTO.prev}">
-        <a class="page-link"  tabindex="-1"
+        <a class="page-link" tabindex="-1"
            th:href="@{/guestbook/list(page=${pageResultDTO.start-1})}">Prev</a>
       </li>
       <li th:each="page : ${pageResultDTO.pageList}"
           th:class=" 'page-item ' + ${pageResultDTO.page == page?'active':''} ">
-        <a class="page-link" th:href="@{/guestbook/list(page=${page})}">[[${page}]]</a>
+        <a class="page-link"
+           th:href="@{/guestbook/list(page=${page})}">[[${page}]]</a>
       </li>
       <li class="page-item " th:if="${pageResultDTO.next}">
-        <a class="page-link" th:href="@{/guestbook/list(page=${pageResultDTO.end+1})}">next</a>
+        <a class="page-link"
+           th:href="@{/guestbook/list(page=${pageResultDTO.end+1})}">Next</a>
       </li>
     </ul>
-
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <script th:inline="javascript">
+      // document의 태그를 모두 읽고 난뒤 실행되는 함수
+      window.onload = function(){
+        var msg = [[${msg}]]
+        console.log(msg)
+        if(msg) {
+          const myModal = new bootstrap.Modal(document.querySelector('#myModal'),
+          { backdrop: true });
+          document.querySelector(".modal-body").innerHTML= `<p>${msg}번 글이 등록되었습니다.</p>`
+          myModal.show()
+        }
+      }
+    </script>
   </th:block>
-
 </th:block>
 </html>
