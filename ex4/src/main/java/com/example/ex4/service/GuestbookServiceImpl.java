@@ -25,16 +25,15 @@ public class GuestbookServiceImpl implements GuestbookService {
   public Long register(GuestbookDTO dto) {
     Guestbook guestbook = dtoToEntity(dto);
     guestbookRepository.save(guestbook);
-
     return guestbook.getGno();
   }
 
   @Override
   public PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO pageRequestDTO) {
-    // 알고자하는 페이지(번호,개수,정렬)
+    // 알고자하는 페이지(번호, 갯수, 정렬)
     Pageable pageable = pageRequestDTO.getPageable(Sort.by("gno").descending());
 
-    // Page<Guestbook> 원하는 페이지의 목록을
+    // Page<Guestbook> 원하는 페이지의 목록
     Page<Guestbook> result = guestbookRepository.findAll(pageable);
 
     // 목록을 처리하기 위한 함수 정의
@@ -44,6 +43,7 @@ public class GuestbookServiceImpl implements GuestbookService {
         return entityToDto(guestbook);
       }
     };
+    // result는 요청페이지의 목록, fn은 result의  원소(Guestbook) 을 GuestbookDTO로 변환가능
     return new PageResultDTO<>(result, fn);
   }
 }

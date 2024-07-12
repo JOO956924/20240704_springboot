@@ -2,7 +2,26 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
   <th:block th:fragment="content">
-    <h1>Guestbook List Page</h1>
+    <h1 class="mt-4">Guestbook List Page</h1>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col">Gno</th>
+        <th scope="col">Title</th>
+        <th scope="col">Writer</th>
+        <th scope="col">RegDate</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="guestbookDTO : ${pageResultDTO.dtoList}">
+        <th scope="row">[[${guestbookDTO.gno}]]</th>
+        <td>[[${guestbookDTO.title}]]</td>
+        <td>[[${guestbookDTO.writer}]]</td>
+        <td>[[${#temporals.format(guestbookDTO.regDate, 'yyyyMMdd hh:mm')}]]</td>
+      </tr>
+      </tbody>
+    </table>
+
   </th:block>
 
 </th:block>
