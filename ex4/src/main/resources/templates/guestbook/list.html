@@ -2,7 +2,9 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
   <th:block th:fragment="content">
-    <h1 class="mt-4">Guestbook List Page</h1>
+    <h1 class="mt-4">Guestbook List Page
+    <a class="btn btn-outline-primary" th:href="@{/guestbook/register}">Register</a>
+    </h1>
     <table class="table table-striped">
       <thead>
       <tr>
@@ -21,6 +23,19 @@
       </tr>
       </tbody>
     </table>
+    <ul class="pagination h-100 justify-content-center align-items-center">
+      <li class="page-item " th:if="${pageResultDTO.prev}">
+        <a class="page-link"  tabindex="-1"
+           th:href="@{/guestbook/list(page=${pageResultDTO.start-1})}">Prev</a>
+      </li>
+      <li th:each="page : ${pageResultDTO.pageList}"
+          th:class=" 'page-item ' + ${pageResultDTO.page == page?'active':''} ">
+        <a class="page-link" th:href="@{/guestbook/list(page=${page})}">[[${page}]]</a>
+      </li>
+      <li class="page-item " th:if="${pageResultDTO.next}">
+        <a class="page-link" th:href="@{/guestbook/list(page=${pageResultDTO.end+1})}">next</a>
+      </li>
+    </ul>
 
   </th:block>
 
