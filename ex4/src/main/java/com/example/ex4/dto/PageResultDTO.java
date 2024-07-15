@@ -12,8 +12,8 @@ import java.util.stream.IntStream;
 @Data
 
 public class PageResultDTO<DTO, EN> {
-  // 결과를 담기 위한 변수
-  private List<DTO> dtoList;
+
+  private List<DTO> dtoList;// 한 페이지의 목록
   private int totalPage; // 총페이지수
   private int page; // 현재페이지위치
   private int size; // 한페이지의 총량
@@ -23,7 +23,9 @@ public class PageResultDTO<DTO, EN> {
 
   // 생성자를 통해서 페이징된 result를 각각의 원소에 대한 함수 적용
   public PageResultDTO(Page<EN> result, Function<EN, DTO> fn) {
+    // Page를 List로 변경 처리
     dtoList = result.stream().map(fn).collect(Collectors.toList());
+    // 전체 페이지 개수 구하기
     totalPage = result.getTotalPages();
     makePageList(result.getPageable());
   }

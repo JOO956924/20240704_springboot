@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -33,10 +34,12 @@ public class GuestbookServiceImpl implements GuestbookService {
     // 알고자하는 페이지(번호, 갯수, 정렬)
     Pageable pageable = pageRequestDTO.getPageable(Sort.by("gno").descending());
 
-    // Page<Guestbook> 원하는 페이지의 목록
+    // Page<Guestbook> 원하는 페이지의 목록(복수)
+    // repository에서 복수개의 데이터를 받을 때 페이징 처리를 하려면 Page<>를 활용
+    // repository에서 복수개의 데이터를 받을 때 페이징이 불필요하면 List<>를 활용
     Page<Guestbook> result = guestbookRepository.findAll(pageable);
 
-    // 목록을 처리하기 위한 함수 정의
+    // Page의 Guestbook을 GuestbookDTO로 변환해주는 함수
     Function<Guestbook, GuestbookDTO> fn = new Function<Guestbook, GuestbookDTO>() {
       @Override
       public GuestbookDTO apply(Guestbook guestbook) {
@@ -45,5 +48,18 @@ public class GuestbookServiceImpl implements GuestbookService {
     };
     // result는 요청페이지의 목록, fn은 result의  원소(Guestbook) 을 GuestbookDTO로 변환가능
     return new PageResultDTO<>(result, fn);
+  }
+
+  @Override
+  public GuestbookDTO read(Long gno) {
+    // 단수 : findById를 통해서 유일한 하나의 객체를 찾아보는 것
+    // Optional의 특징 : null 값을 받아도 에러가 발생하지 않고, 형변환 안해도 안전
+    Optional<Guestbook> result = guestbookRepository.findById(gno);
+    GuestbookDTO guestbookDTO = null;
+    if (result.isPresent()) {
+      guestbookDTO = entityToDto(result.get());
+    }
+    return guestbookDTO;
+//    return result.isPresent()?entityToDto(result.get()):null;
   }
 }

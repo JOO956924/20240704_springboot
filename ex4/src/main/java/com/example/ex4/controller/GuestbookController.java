@@ -23,6 +23,7 @@ public class GuestbookController {
 
   @GetMapping({"", "/", "/list"})
   public String list(Model model, PageRequestDTO pageRequestDTO) {
+    // 페이지에 대한 정보를 통해서 최종 PageResultDTO를 생성
     model.addAttribute("pageResultDTO",
         guestbookService.getList(pageRequestDTO));
     return "/guestbook/list";
@@ -36,7 +37,16 @@ public class GuestbookController {
     log.info("register post.........");
     Long gno = guestbookService.register(guestbookDTO);
     ra.addFlashAttribute("msg", gno);
-
+    // redirect는 컨트롤러로 재전송한다는 의미
     return "redirect:/guestbook/list";
+  }
+
+  @GetMapping("/read")
+  public void readGet(Long gno, int page, Model model) {
+    log.info("read Get.......");
+    GuestbookDTO guestbookDTO = guestbookService.read(gno);
+    model.addAttribute("guestbookDTO", guestbookDTO);
+    model.addAttribute("page",page);
+
   }
 }
