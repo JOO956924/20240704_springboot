@@ -4,7 +4,7 @@
   <th:block th:fragment="content">
     <h1 class="mt-4">Guestbook Read Page</h1>
     <style>
-      form>div {margin-bottom: 20px;}
+      .form-group {margin-bottom: 30px;}
     </style>
     <form th:action="@{/guestbook/modify}" th:method="post" id="frmSend">
       <div class="form-group">
@@ -36,8 +36,10 @@
         <input type="text" name="modDate" id="modDate" class="form-control"
                th:value="${#temporals.format(guestbookDTO.modDate, 'yyyy/MM/dd hh:mm')}" readonly>
       </div>
-      <a th:href="@{/guestbook/modify(gno=${guestbookDTO.gno})}" class="btn btn-outline-primary">Modify</a>
+      <div class="form-group">
+      <a th:href="@{/guestbook/modify(gno=${guestbookDTO.gno},page=${page})}" class="btn btn-outline-primary">Modify</a>
       <a class="btn btn-outline-info" th:href="@{/guestbook/list(page=${page})}">List</a>
+      </div>
     </form>
     <script th:inline="javascript">
 

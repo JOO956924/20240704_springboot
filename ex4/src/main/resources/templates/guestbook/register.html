@@ -9,25 +9,18 @@
     <form th:action="@{/guestbook/register}" th:method="post" id="frmSend">
       <div class="form-group">
         <label for="title">Title</label>
-        <input type="text" name="title" id="title" class="form-control" placeholder="타이틀을 입력하세요">
+        <input type="text" name="title" id="title" class="form-control"
+               placeholder="타이틀을 입력하세요">
       </div>
       <div class="form-group">
         <label for="content">Content</label>
-        <textarea type="text" name="content" id="content" class="form-control" placeholder="내용을 입력하세요"></textarea>
+        <textarea type="text" name="content" id="content" class="form-control"
+                  placeholder="내용을 입력하세요"></textarea>
       </div>
       <div class="form-group">
         <label for="writer">Writer</label>
-        <input type="text" name="writer" id="writer" class="form-control" placeholder="작성자을 입력하세요" value="user1">
-      </div>
-      <div class="form-group">
-        <label for="title">RegDate</label>
-        <input type="text" name="regDate" id="regDate" class="form-control"
-               th:value="${#temporals.format(guestbookDTO.regDate, 'yyyy/MM/dd hh:mm')}" readonly>
-      </div>
-      <div class="form-group">
-        <label for="title">ModDate</label>
-        <input type="text" name="modDate" id="modDate" class="form-control"
-               th:value="${#temporals.format(guestbookDTO.modDate, 'yyyy/MM/dd hh:mm')}" readonly>
+        <input type="text" name="writer" id="writer" class="form-control"
+               placeholder="작성자를 입력하세요" value="user1">
       </div>
       <button type="submit" id="btnSend" class="btn btn-primary">Submit</button>
     </form>
@@ -46,4 +39,5 @@
   </th:block>
 
 </th:block>
+
 </html>

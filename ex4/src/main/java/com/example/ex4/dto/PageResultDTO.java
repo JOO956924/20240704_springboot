@@ -39,6 +39,7 @@ public class PageResultDTO<DTO, EN> {
     prev = start > 1;
     end = totalPage > tempEnd ? tempEnd : totalPage;
     next = totalPage > tempEnd;
-    pageList = IntStream.rangeClosed(start, end).boxed().collect(Collectors.toList()); 
+    pageList = // 페이지 번호 목록
+        IntStream.rangeClosed(start, end).boxed().collect(Collectors.toList());
   }
 }
