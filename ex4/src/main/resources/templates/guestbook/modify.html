@@ -51,8 +51,9 @@
       frmSend = document.querySelector("#frmSend")
       btnModi.onclick = e => {
         e.preventDefault()
+        title = document.querySelector("#title")
+        content = document.querySelector("#content")
         if(title.value == "") {title.focus();return false;}
-        if(writer.value == "") {writer.focus();return false;}// 유효성검사 넣어줄 것!
         frmSend.submit();
       }
       btnDele.onclick = e => {

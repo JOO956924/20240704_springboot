@@ -6,8 +6,6 @@ import com.example.ex4.dto.PageResultDTO;
 import com.example.ex4.entity.Guestbook;
 
 public interface GuestbookService {
-
-
   default Guestbook dtoToEntity(GuestbookDTO dto) {
     Guestbook guestbook = Guestbook.builder()
         .gno(dto.getGno())
@@ -17,7 +15,6 @@ public interface GuestbookService {
         .build();
     return guestbook;
   }
-
   default GuestbookDTO entityToDto(Guestbook guestbook) {
     GuestbookDTO guestbookDTO = GuestbookDTO.builder()
         .gno(guestbook.getGno())
@@ -29,11 +26,10 @@ public interface GuestbookService {
         .build();
     return guestbookDTO;
   }
-
   Long register(GuestbookDTO dto);
-
   PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO pageRequestDTO);
   GuestbookDTO read(Long gno);
   void modify(GuestbookDTO guestbookDTO);
   void remove(GuestbookDTO guestbookDTO);
+
 }

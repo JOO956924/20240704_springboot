@@ -30,23 +30,25 @@ public class GuestbookController {
   }
 
   @GetMapping("/register")
-  public void registerGet() { log.info("register get.....");}
+  public void registerGet() {
+    log.info("register get.....");
+  }
 
   @PostMapping({"/register"})
   public String registerPost(GuestbookDTO guestbookDTO, RedirectAttributes ra) {
     log.info("register post.........");
     Long gno = guestbookService.register(guestbookDTO);
-    ra.addFlashAttribute("msg", gno +"번이 등록");
+    ra.addFlashAttribute("msg", gno + "번이 등록");
     // redirect는 컨트롤러로 재전송한다는 의미
     return "redirect:/guestbook/list";
   }
 
-  @GetMapping({"/read","/modify"})
+  @GetMapping({"/read", "/modify"})
   public void readGet(Long gno, int page, Model model) {
     log.info("read Get.......");
     GuestbookDTO guestbookDTO = guestbookService.read(gno);
     model.addAttribute("guestbookDTO", guestbookDTO);
-    model.addAttribute("page",page);
+    model.addAttribute("page", page);
 
   }
 
@@ -54,14 +56,20 @@ public class GuestbookController {
   public String modify(GuestbookDTO guestbookDTO, PageRequestDTO pageRequestDTO, RedirectAttributes ra) {
     log.info("modify post............");
     guestbookService.modify(guestbookDTO);
-    ra.addFlashAttribute("msg", guestbookDTO.getGno());
-    ra.addFlashAttribute("page", pageRequestDTO.getPage());
+    ra.addFlashAttribute("msg", guestbookDTO.getGno() + "번이 수정");
+    ra.addAttribute("page", pageRequestDTO.getPage());
+    ra.addAttribute("gno", guestbookDTO.getGno());
     return "redirect:/guestbook/read";
   }
+
   @PostMapping("/remove")
   public String remove(GuestbookDTO guestbookDTO, PageRequestDTO pageRequestDTO, RedirectAttributes ra) {
     log.info("remove post............");
     guestbookService.remove(guestbookDTO);
+    if (guestbookService.getList(pageRequestDTO).getDtoList().size() == 0 && pageRequestDTO.getPage() != 1) {
+      pageRequestDTO.setPage(pageRequestDTO.getPage() - 1);
+    }
+
     ra.addFlashAttribute("msg", guestbookDTO.getGno() + "번이 삭제");
     ra.addAttribute("page", pageRequestDTO.getPage());
     return "redirect:/guestbook/list";
