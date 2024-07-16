@@ -61,12 +61,17 @@
       window.onload = function(){
         var msg = [[${msg}]]
         console.log(msg)
+        // 일회성 msg의 내용이 비어있거나 history의 상태가 비어있지 않는경우 멈춤
+        if(msg === '' || history.state) return
+
         if(msg) { // truthy 데이터가 올 경우에만 if문 실행
           const myModal = new bootstrap.Modal(document.querySelector('#myModal'),
           { backdrop: true });
           document.querySelector(".modal-body").innerHTML= `<p>${msg}되었습니다.</p>`
           myModal.show()
         }
+        // history 이용해서 모달창 보여준거에 대한 기록을 clear!
+        history.replaceState({}, null, null) // (state, unused, url)
       }
     </script>
   </th:block>

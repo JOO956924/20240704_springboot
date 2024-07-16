@@ -61,12 +61,15 @@
       window.onload = function(){
         var msg = [[${msg}]]
         console.log(msg)
+        if(msg === '' || history.state) return
+        
         if(msg) { // truthy 데이터가 올 경우에만 if문 실행
           const myModal = new bootstrap.Modal(document.querySelector('#myModal'),
           { backdrop: true });
           document.querySelector(".modal-body").innerHTML= `<p>${msg}되었습니다.</p>`
           myModal.show()
         }
+        history.replaceState({}, null, null) // (state, unused, url)
       }
     </script>
   </th:block>
