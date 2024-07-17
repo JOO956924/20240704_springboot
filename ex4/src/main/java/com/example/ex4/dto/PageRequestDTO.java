@@ -13,6 +13,8 @@ import org.springframework.data.domain.Sort;
 public class PageRequestDTO {
   private int page; // 요청되는 페이지 번호
   private int size; // 페이지당 목록 개수
+  private String type;
+  private String keyword;
 
   public PageRequestDTO() {
     page = 1; size = 10;

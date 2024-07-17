@@ -4,7 +4,10 @@ import com.example.ex4.dto.GuestbookDTO;
 import com.example.ex4.dto.PageRequestDTO;
 import com.example.ex4.dto.PageResultDTO;
 import com.example.ex4.entity.Guestbook;
+import com.example.ex4.entity.QGuestbook;
 import com.example.ex4.repository.GuestbookRepository;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -34,11 +37,12 @@ public class GuestbookServiceImpl implements GuestbookService {
     // 알고자하는 페이지(번호, 갯수, 정렬)
     Pageable pageable = pageRequestDTO.getPageable(Sort.by("gno").descending());
 
+    BooleanBuilder booleanBuilder = getSearch(pageRequestDTO);
     // 복수의 데이터를 처리할 때
     // repository에서 복수개의 데이터를 받을 때 페이징 필요하면   Page<>를 활용
     // repository에서 복수개의 데이터를 받을 때 페이징 불필요하면 List<>를 활용
     // Page<Guestbook> 원하는 페이지의 목록(복수)
-    Page<Guestbook> result = guestbookRepository.findAll(pageable);
+    Page<Guestbook> result = guestbookRepository.findAll(booleanBuilder, pageable);
 
     // Page의 Guestbook을 GuestbookDTO로 변환해 주는 함수
     Function<Guestbook, GuestbookDTO> fn = new Function<Guestbook, GuestbookDTO>() {
@@ -50,6 +54,24 @@ public class GuestbookServiceImpl implements GuestbookService {
     // result는 요청페이지의 목록,
     // fn은 result의 원소(Guestbook)를 GuestbookDTO로 변환기능
     return new PageResultDTO<>(result, fn);
+  }
+
+  private BooleanBuilder getSearch(PageRequestDTO pageRequestDTO) {
+    String type = pageRequestDTO.getType();
+    String keyword = pageRequestDTO.getKeyword();
+    // 동적 검색을 하기 위한 객체 생성
+    BooleanBuilder booleanBuilder = new BooleanBuilder();
+    QGuestbook qGuestbook = QGuestbook.guestbook; // 검색 대상인 QGuestbook 초기화
+    BooleanExpression expression = qGuestbook.gno.gt(0L);// 전체조건부여
+    booleanBuilder.and(expression);// 첫번째 조건을 적용
+
+    BooleanBuilder conditionBuilder = new BooleanBuilder(); // 세부 검색 조건 객체
+    if (type == null || type.trim().length() == 0) return booleanBuilder;
+    if (type.contains("t")) conditionBuilder.or(qGuestbook.title.contains(keyword));
+    if (type.contains("c")) conditionBuilder.or(qGuestbook.content.contains(keyword));
+    if (type.contains("w")) conditionBuilder.or(qGuestbook.writer.contains(keyword));
+    booleanBuilder.and(conditionBuilder);
+    return booleanBuilder;
   }
 
   @Override
@@ -67,6 +89,7 @@ public class GuestbookServiceImpl implements GuestbookService {
 
   @Override
   public void modify(GuestbookDTO guestbookDTO) {
+    // 수정하기위해서는 먼저 해당 학목을 검색하여 객체를 획득한 후에 필요 부분만 수정.
     Optional<Guestbook> result = guestbookRepository.findById(guestbookDTO.getGno());
     if (result.isPresent()) {
       Guestbook guestbook = result.get();
