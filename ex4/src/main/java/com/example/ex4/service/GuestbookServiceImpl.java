@@ -61,15 +61,15 @@ public class GuestbookServiceImpl implements GuestbookService {
     String keyword = pageRequestDTO.getKeyword();
     // 동적 검색을 하기 위한 객체 생성
     BooleanBuilder booleanBuilder = new BooleanBuilder();
-    QGuestbook qGuestbook = QGuestbook.guestbook; // 검색 대상인 QGuestbook 초기화
-    BooleanExpression expression = qGuestbook.gno.gt(0L);// 전체조건부여
-    booleanBuilder.and(expression);// 첫번째 조건을 적용
+    QGuestbook qGuestbook = QGuestbook.guestbook; // 검색 대상인 QGuestbook
+    BooleanExpression expression = qGuestbook.gno.gt(0L);//전체조건부여
+    booleanBuilder.and(expression); // 첫번째 조건을 적용
 
     BooleanBuilder conditionBuilder = new BooleanBuilder(); // 세부 검색 조건 객체
-    if (type == null || type.trim().length() == 0) return booleanBuilder;
-    if (type.contains("t")) conditionBuilder.or(qGuestbook.title.contains(keyword));
-    if (type.contains("c")) conditionBuilder.or(qGuestbook.content.contains(keyword));
-    if (type.contains("w")) conditionBuilder.or(qGuestbook.writer.contains(keyword));
+    if(type == null || type.trim().length() == 0) return booleanBuilder;
+    if(type.contains("t")) conditionBuilder.or(qGuestbook.title.contains(keyword));
+    if(type.contains("c")) conditionBuilder.or(qGuestbook.content.contains(keyword));
+    if(type.contains("w")) conditionBuilder.or(qGuestbook.writer.contains(keyword));
     booleanBuilder.and(conditionBuilder);
     return booleanBuilder;
   }
@@ -89,7 +89,7 @@ public class GuestbookServiceImpl implements GuestbookService {
 
   @Override
   public void modify(GuestbookDTO guestbookDTO) {
-    // 수정하기위해서는 먼저 해당 학목을 검색하여 객체를 획득한 후에 필요 부분만 수정.
+    // 수정하기위해서는 먼저 해당 항목을 검색하여 객체를 획득한 후에 필요 부분만 수정.
     Optional<Guestbook> result = guestbookRepository.findById(guestbookDTO.getGno());
     if (result.isPresent()) {
       Guestbook guestbook = result.get();

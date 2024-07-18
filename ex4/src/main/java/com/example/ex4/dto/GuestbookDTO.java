@@ -1,6 +1,5 @@
 package com.example.ex4.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,5 +17,4 @@ public class GuestbookDTO {
   private String content;
   private String writer;
   private LocalDateTime regDate, modDate;
-
 }

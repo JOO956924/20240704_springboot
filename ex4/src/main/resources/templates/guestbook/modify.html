@@ -50,10 +50,7 @@
       btnBack = document.querySelector(".btnBack")
       frmSend = document.querySelector("#frmSend")
       btnModi.onclick = e => {
-        e.preventDefault()
-        title = document.querySelector("#title")
-        content = document.querySelector("#content")
-        if(title.value == "") {title.focus();return false;}
+        e.preventDefault() // 유효성검사 넣어줄 것!
         frmSend.submit();
       }
       btnDele.onclick = e => {

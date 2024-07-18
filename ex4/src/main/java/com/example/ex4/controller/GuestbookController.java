@@ -3,7 +3,6 @@ package com.example.ex4.controller;
 import com.example.ex4.dto.GuestbookDTO;
 import com.example.ex4.dto.PageRequestDTO;
 import com.example.ex4.service.GuestbookService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
@@ -23,9 +22,9 @@ public class GuestbookController {
 
   @GetMapping({"", "/", "/list"})
   public String list(Model model, PageRequestDTO pageRequestDTO) {
-    // 페이지에 대한 정보를 통해서 최종 PageResultDTO를 생성
-    model.addAttribute("pageResultDTO",
-        guestbookService.getList(pageRequestDTO));
+    // PageRequestDTO는 커맨드 객체이며, 다음페이지에 model로 전송안해도 넘어간다.
+    // 페이지에 대한 요청 정보를 통해서 최종 PageResultDTO 생성
+    model.addAttribute("pageResultDTO", guestbookService.getList(pageRequestDTO));
     return "/guestbook/list";
   }
 
@@ -34,9 +33,9 @@ public class GuestbookController {
     log.info("register get.....");
   }
 
-  @PostMapping({"/register"})
+  @PostMapping("/register")
   public String registerPost(GuestbookDTO guestbookDTO, RedirectAttributes ra) {
-    log.info("register post.........");
+    log.info("register post........");
     Long gno = guestbookService.register(guestbookDTO);
     ra.addFlashAttribute("msg", gno + "번이 등록");
     // redirect는 컨트롤러로 재전송한다는 의미
@@ -44,34 +43,35 @@ public class GuestbookController {
   }
 
   @GetMapping({"/read", "/modify"})
-  public void readGet(Long gno, int page, Model model) {
-    log.info("read Get.......");
+  public void read(Long gno, PageRequestDTO pageRequestDTO, Model model) {
     GuestbookDTO guestbookDTO = guestbookService.read(gno);
     model.addAttribute("guestbookDTO", guestbookDTO);
-    model.addAttribute("page", page);
-
   }
 
   @PostMapping("/modify")
-  public String modify(GuestbookDTO guestbookDTO, PageRequestDTO pageRequestDTO, RedirectAttributes ra) {
-    log.info("modify post............");
+  public String modify(GuestbookDTO guestbookDTO, PageRequestDTO pageRequestDTO,
+                       RedirectAttributes ra) {
     guestbookService.modify(guestbookDTO);
     ra.addFlashAttribute("msg", guestbookDTO.getGno() + "번이 수정");
     ra.addAttribute("page", pageRequestDTO.getPage());
+    ra.addAttribute("type", pageRequestDTO.getType());
+    ra.addAttribute("keyword", pageRequestDTO.getKeyword());
     ra.addAttribute("gno", guestbookDTO.getGno());
     return "redirect:/guestbook/read";
   }
 
   @PostMapping("/remove")
-  public String remove(GuestbookDTO guestbookDTO, PageRequestDTO pageRequestDTO, RedirectAttributes ra) {
-    log.info("remove post............");
+  public String remove(GuestbookDTO guestbookDTO, PageRequestDTO pageRequestDTO,
+                       RedirectAttributes ra) {
     guestbookService.remove(guestbookDTO);
-    if (guestbookService.getList(pageRequestDTO).getDtoList().size() == 0 && pageRequestDTO.getPage() != 1) {
+    if (guestbookService.getList(pageRequestDTO).getDtoList().size() == 0 &&
+        pageRequestDTO.getPage() != 1) {
       pageRequestDTO.setPage(pageRequestDTO.getPage() - 1);
     }
-
     ra.addFlashAttribute("msg", guestbookDTO.getGno() + "번이 삭제");
     ra.addAttribute("page", pageRequestDTO.getPage());
+    ra.addAttribute("type", pageRequestDTO.getType());
+    ra.addAttribute("keyword", pageRequestDTO.getKeyword());
     return "redirect:/guestbook/list";
   }
 }

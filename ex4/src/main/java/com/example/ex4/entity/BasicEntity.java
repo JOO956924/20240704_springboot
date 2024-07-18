@@ -10,8 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-
-@MappedSuperclass // 이 클레스는 테이블로 생성되지 않는 설정
+@MappedSuperclass // 이 클래스는 테이블로 생성되지 않는 설정
 @EntityListeners(value = {AuditingEntityListener.class})
 @Getter
 abstract class BasicEntity {
@@ -23,4 +22,5 @@ abstract class BasicEntity {
   @LastModifiedDate
   @Column(name = "moddate")
   private LocalDateTime modDate;
+
 }
