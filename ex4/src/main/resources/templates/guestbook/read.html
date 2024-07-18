@@ -38,8 +38,13 @@
                th:value="${#temporals.format(guestbookDTO.modDate, 'yyyy/MM/dd hh:mm')}">
       </div>
       <div class="form-group">
-        <a th:href="@{/guestbook/modify(gno=${guestbookDTO.gno},page=${page})}" class="btn btn-primary">Modify</a>
-        <a th:href="@{/guestbook/list(page=${page})}" class="btn btn-info">List</a>
+        <a th:href="@{/guestbook/modify(gno=${guestbookDTO.gno},
+                      page=${pageRequestDTO.page},type=${pageRequestDTO.type},
+                      keyword=${pageRequestDTO.keyword})}"
+           class="btn btn-primary">Modify</a>
+        <a th:href="@{/guestbook/list(page=${pageRequestDTO.page},
+                      type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}"
+           class="btn btn-info">List</a>
       </div>
     </form>
     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

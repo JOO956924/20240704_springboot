@@ -34,25 +34,29 @@ public class GuestbookServiceImpl implements GuestbookService {
 
   @Override
   public PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO pageRequestDTO) {
-    // 알고자하는 페이지(번호, 갯수, 정렬)
+    // 알고자하는 페이지 요청에 대한 정보 객체(번호, 갯수, 정렬, 검색타입, 검색키워드)
     Pageable pageable = pageRequestDTO.getPageable(Sort.by("gno").descending());
 
+    // 동적 검색(QueryDSL)의 조건이 담긴 객체 :: BooleanBuilder
     BooleanBuilder booleanBuilder = getSearch(pageRequestDTO);
+
     // 복수의 데이터를 처리할 때
     // repository에서 복수개의 데이터를 받을 때 페이징 필요하면   Page<>를 활용
     // repository에서 복수개의 데이터를 받을 때 페이징 불필요하면 List<>를 활용
     // Page<Guestbook> 원하는 페이지의 목록(복수)
+
+    // 요청페이지정보객체와 동적검색조검객체의 조건을 통해 리포지터리에서 검색한 결과 => Page
     Page<Guestbook> result = guestbookRepository.findAll(booleanBuilder, pageable);
 
-    // Page의 Guestbook을 GuestbookDTO로 변환해 주는 함수
+    // 결과 객체인 Page의 원소 각각에 대해 Guestbook을 GuestbookDTO로 변환해 주는 함수
     Function<Guestbook, GuestbookDTO> fn = new Function<Guestbook, GuestbookDTO>() {
       @Override
       public GuestbookDTO apply(Guestbook guestbook) {
         return entityToDto(guestbook);
       }
     };
-    // result는 요청페이지의 목록,
-    // fn은 result의 원소(Guestbook)를 GuestbookDTO로 변환기능
+    // result는 Page<Guestbook>이고 List<GuestbookDTO>로 변환해야 함.
+    // 그래서, fn에 result의 원소(Guestbook)를 GuestbookDTO로 변환기능 정의.
     return new PageResultDTO<>(result, fn);
   }
 

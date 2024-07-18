@@ -23,7 +23,7 @@ public class PageRequestDTO {
 
   // Pageable은 페이지 처리를 위한 객체
   public Pageable getPageable(Sort sort) {
-    // page - 1 :: page가 0부터 시작
+    // Pageable 객체는 페이지 번호가 0부터 시작
     return PageRequest.of(page - 1, size, sort);
   }
 }

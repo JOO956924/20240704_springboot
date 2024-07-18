@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
 @Data
 public class PageResultDTO<DTO, EN> {
   private List<DTO> dtoList; // 한 페이지의 목록
-  private int totalPage; //총페이지수
+  private int totalPage; //총페이지수 10개
   private int page; // 현재 페이지
   private int size; // 한 페이지의 목록수
   private int start, end; //시작 페이지와 끝페이지 번호
