@@ -21,18 +21,14 @@ class MemberRepositoryTests {
   public void insertMembers() {
     IntStream.rangeClosed(1,100).forEach(new IntConsumer() {
       @Override
-      public void accept(int value) {
+      public void accept(int i) {
         Member member = Member.builder()
-            .email()
+            .email(String.format("user%d@a.a", i))
+            .password("1")
+            .name("USER" + i)
             .build();
-      }
-    });
-    IntStream.rangeClosed(1,100).map(new IntUnaryOperator() {
-      @Override
-      public int applyAsInt(int operand) {
-        return 0;
+        memberRepository.save(member);
       }
     });
   }
-
 }
