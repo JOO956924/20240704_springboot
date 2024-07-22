@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Log4j2
 @RequestMapping("/board")
 public class BoardController {
-  @RequestMapping({"", "/", "list"})
+  @RequestMapping({"","/","/list"})
   public String list() {
 
     return "/board/list";

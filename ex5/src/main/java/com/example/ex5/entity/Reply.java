@@ -20,5 +20,4 @@ public class Reply extends BasicEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   private Board board;
-
 }

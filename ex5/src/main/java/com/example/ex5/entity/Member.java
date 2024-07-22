@@ -10,10 +10,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Member extends BasicEntity{
+public class Member extends BasicEntity {
   @Id
   private String email;
-
   private String password;
   private String name;
 }
