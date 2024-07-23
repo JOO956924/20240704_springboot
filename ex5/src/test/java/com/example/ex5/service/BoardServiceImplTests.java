@@ -3,9 +3,12 @@ package com.example.ex5.service;
 import com.example.ex5.dto.BoardDTO;
 import com.example.ex5.dto.PageRequestDTO;
 import com.example.ex5.dto.PageResultDTO;
+import com.example.ex5.entity.Board;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,6 +46,12 @@ class BoardServiceImplTests {
 
   @Test
   void modify() {
+    BoardDTO boardDTO = BoardDTO.builder()
+        .bno(2L)
+        .title("제목 변경")
+        .content("내용 변경")
+        .build();
+    boardService.modify(boardDTO);
   }
 
   @Test

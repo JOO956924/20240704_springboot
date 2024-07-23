@@ -7,6 +7,8 @@ import com.example.ex5.entity.Board;
 import com.example.ex5.entity.Member;
 import com.example.ex5.repository.BoardRepository;
 import com.example.ex5.repository.ReplyRepository;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -52,6 +54,8 @@ public class BoardServiceImpl implements BoardService {
     Object[] arr = (Object[]) result;
     return entityToDTO((Board) arr[0], (Member) arr[1], (Long) arr[2]);
   }
+
+
 
   @Override
   public void modify(BoardDTO boardDTO) {

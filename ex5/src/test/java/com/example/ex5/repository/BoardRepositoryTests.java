@@ -56,7 +56,7 @@ class BoardRepositoryTests {
 
   @Test
   public void testBoardWithReply() {
-    List<Object[]> result = boardRepository.getBoardWithReply(8L);
+    List<Object[]> result = boardRepository.getBoardWithReply(10L);
     for (Object[] arr : result) {
       System.out.println(Arrays.toString(arr));
     }
@@ -74,11 +74,14 @@ class BoardRepositoryTests {
 
   @Test
   public void testRead3() {
-    Object result = boardRepository.getboardByBno(8L);
+    Object result = boardRepository.getboardByBno(10L);
     Object[] arr = (Object[]) result;
-    for (Object object : arr) {
-      System.out.println(object);
-    }
+    for (Object object : arr) System.out.println(object);
+
+  }
+
+  @Test
+  public void testSearch1() {
+    boardRepository.search1();
   }
 }
-

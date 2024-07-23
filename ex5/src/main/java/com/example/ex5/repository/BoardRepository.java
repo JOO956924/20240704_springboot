@@ -1,6 +1,7 @@
 package com.example.ex5.repository;
 
 import com.example.ex5.entity.Board;
+import com.example.ex5.repository.search.SearchBoardRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface BoardRepository extends JpaRepository<Board, Long> {
+public interface BoardRepository extends JpaRepository<Board, Long>, SearchBoardRepository {
 
   // 쿼리@을 활용하여 JPQL(Java Persistence Query Language)을 적용한다.
   // JPQL은 SQL을 추상화한 객체지향쿼리 언어이다. 테이블이 아닌 엔티티를 대상으로 쿼리함.
