@@ -19,8 +19,7 @@ public interface BoardService {
 
   public default BoardDTO entityToDTO(Board board, Member member, Long replyCount) {
     BoardDTO boardDTO = BoardDTO.builder()
-        .bno(board.getBno())
-        .title(board.getTitle())
+        .bno(board.getBno()).title(board.getTitle())
         .content(board.getContent())
         .writerEmail(member.getEmail())
         .writerName(member.getName())
@@ -30,10 +29,10 @@ public interface BoardService {
         .build();
     return boardDTO;
   }
+
   Long register(BoardDTO boardDTO);
   PageResultDTO<BoardDTO, Object[]> getList(PageRequestDTO pageRequestDTO);
   BoardDTO get(Long bno);
-  void modify(BoardDTO boardDTODTO);
-  void removeWithReplies(BoardDTO boardDTODTO);
+  void modify(BoardDTO boardDTO);
+  void removeWithReplies(Long bno);
 }
-

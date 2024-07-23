@@ -7,7 +7,7 @@ import com.example.ex5.entity.Board;
 import com.example.ex5.entity.Member;
 import com.example.ex5.repository.BoardRepository;
 import com.example.ex5.repository.ReplyRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -64,10 +64,10 @@ public class BoardServiceImpl implements BoardService {
     }
   }
 
-  @Override
   @Transactional
-  public void removeWithReplies(BoardDTO boardDTO) {
-    replyRepository.deleteById(boardDTO.getBno());
-    boardRepository.deleteById(boardDTO.getBno());
+  @Override
+  public void removeWithReplies(Long bno) {
+    replyRepository.deleteByBno(bno);
+    boardRepository.deleteById(bno);
   }
 }
