@@ -47,6 +47,13 @@
            class="btn btn-info">List</a>
       </div>
     </form>
+    <div>
+      <div class="mt-4">
+        <h5> <span class="btn btn-warning replyCount">Reply Count
+      [[${boardDTO.replyCount}]]</span></h5>
+      </div>
+      <div class="list-group replyList"></div>
+    </div>
     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -66,9 +73,46 @@
     <script th:inline="javascript">
       // document의 태그를 모두 읽고 난뒤 실행되는 함수
       window.onload = function(){
+        loadJSONData();
+        function loadJSONData() {
+          const bno = [[${boardDTO.bno}]]
+          const url = /*[[@{/replies/board/}]]*/'url'
+          const listGroup = document.querySelector(".replyList")
+          fetch(url+bno, {method: 'GET',})
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+            let str = "";
+            for(let i=0;i<data.length;i++) {
+              str += `<div class="card-body form-control"
+              data-rno="${data[i].rno}" data-text="${data[i].text}"
+              data-replyer="${data[i].replyer}" style="cursor:pointer;">
+              <b>${data[i].rno}</b>
+              <h5 class="card-text">${data[i].text}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">${data[i].replyer}</h6>
+              <p class="card-text">${formatDateTime(data[i].regDate)}</p>
+              </div>`
+            }
+            listGroup.innerHTML = str
+          });
+        }
+        function formatDateTime(str) {
+          const date = new Date(str)
+          return `${date.getFullYear()}/${len2(date.getMonth()+1)}`
+             + `/${len2(date.getDate())} ${len2(date.getHours())}:`
+             + `${len2(date.getMinutes())}`
+        }
+        function len2(num) {
+          return (num<10) ? "0"+num : num;
+        }
+
         var msg = [[${msg}]]
+
         // 일회성 msg의 내용이 비거나 history 상태가 비지 않는 경우 return
         if(msg === '' || history.state) return
+        // history 이용해서 모달창 보여준거에 대한 기록을 clear!
+        history.replaceState({}, null, null) //(state, unused, url)
+
         if(msg) {  // truthy 데이터가 올 경우만 if문 실행
           const myModal = new bootstrap.Modal(document.querySelector('#myModal'),
                           { backdrop: true });
@@ -76,8 +120,6 @@
             = `<p>${msg}되었습니다.</p>`
           myModal.show()
         }
-        // history 이용해서 모달창 보여준거에 대한 기록을 clear!
-        history.replaceState({}, null, null) //(state, unused, url)
       }
     </script>
   </th:block>
