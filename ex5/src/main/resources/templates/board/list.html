@@ -39,7 +39,7 @@
           onmouseover="this.style.background='#d6e6ff'"
           onmouseout="this.style.background='white'">
         <th scope="row">[[${boardDTO.bno}]]</th>
-        <td>[[${boardDTO.title}]]-----[<b th:text="${boardDTO.replyCount}"></b>]</td>
+        <td>[[${boardDTO.title}]] ___ [<b th:text="${boardDTO.replyCount}"></b>]</td>
         <td>[[${boardDTO.writerName}]]<small>([[${boardDTO.writerEmail}]])</small></td>
         <td>[[${#temporals.format(boardDTO.regDate, 'yyyy/MM/dd hh:mm')}]]</td>
       </tr>

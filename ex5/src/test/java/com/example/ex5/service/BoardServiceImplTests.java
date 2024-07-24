@@ -56,6 +56,6 @@ class BoardServiceImplTests {
 
   @Test
   void removeWithReplies() {
-    boardService.removeWithReplies(3L);
+    boardService.removeWithReplies(1L);
   }
 }

@@ -7,8 +7,6 @@ import com.example.ex5.entity.Board;
 import com.example.ex5.entity.Member;
 import com.example.ex5.repository.BoardRepository;
 import com.example.ex5.repository.ReplyRepository;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -37,25 +35,27 @@ public class BoardServiceImpl implements BoardService {
 
   @Override
   public PageResultDTO<BoardDTO, Object[]> getList(PageRequestDTO pageRequestDTO) {
-    Pageable pageable = pageRequestDTO.getPageable(Sort.by("bno").descending());
-    Page<Object[]> result = boardRepository.getBoardWithReplyCount(pageable);
-    Function<Object[], BoardDTO> fn = new Function<Object[], BoardDTO>() {
-      @Override
-      public BoardDTO apply(Object[] obj) {
-        return entityToDTO((Board) obj[0], (Member) obj[1], (Long) obj[2]);
-      }
-    };
+    log.info(pageRequestDTO);
+    Function<Object[], BoardDTO> fn = (en -> entityToDTO((Board) en[0], (Member) en[1], (Long) en[2]));
+//    Querydsl(동적 검색) 없는 페이징 처리
+//    Page<Object[]> result = boardRepository.getBoardWithReplyCount(
+//        pageRequestDTO.getPageable(Sort.by("bno").descending()));
+
+//    Querydsl(동적 검색) 을 활용한 페이징 처리
+    Page<Object[]> result = boardRepository.searchPage(
+        pageRequestDTO.getType(),
+        pageRequestDTO.getKeyword(),
+        pageRequestDTO.getPageable(Sort.by("bno").descending()));
+
     return new PageResultDTO<>(result, fn);
   }
 
   @Override
   public BoardDTO get(Long bno) {
-    Object result = boardRepository.getboardByBno(bno);
+    Object result = boardRepository.getBoardByBno(bno);
     Object[] arr = (Object[]) result;
     return entityToDTO((Board) arr[0], (Member) arr[1], (Long) arr[2]);
   }
-
-
 
   @Override
   public void modify(BoardDTO boardDTO) {

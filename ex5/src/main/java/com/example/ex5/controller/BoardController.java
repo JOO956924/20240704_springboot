@@ -8,7 +8,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -21,10 +20,10 @@ public class BoardController {
   private final BoardService boardService;
 
   @RequestMapping({"","/","/list"})
-  // @ModelAttribute("pageDTO") 커맨드 객체를 다음페이지에 다른 이름으로 지정.
-  public String list( PageRequestDTO pageRequestDTO, Model model) {
+  // @ModelAttribute("pageDTO") 커맨드객체를 다음페이지에 다른 이름으로 지정.
+  public String list(PageRequestDTO pageDTO, Model model) {
     log.info("list...........");
-    model.addAttribute(boardService.getList(pageRequestDTO));
+    model.addAttribute(boardService.getList(pageDTO));
     return "/board/list";
   }
 
@@ -63,7 +62,7 @@ public class BoardController {
   }
 
   @PostMapping("/remove")
-  public String removeWithReplies(BoardDTO boardDTO, PageRequestDTO pageRequestDTO,
+  public String remove(BoardDTO boardDTO, PageRequestDTO pageRequestDTO,
                        RedirectAttributes ra) {
     boardService.removeWithReplies(boardDTO.getBno());
     if (boardService.getList(pageRequestDTO).getDtoList().size() == 0 &&
