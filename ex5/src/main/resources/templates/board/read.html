@@ -4,7 +4,7 @@
   <th:block th:fragment="content">
     <h1 class="mt-4">Board Read Page</h1>
     <style>
-      .form-group {margin-bottom: 30px;}
+      .form-group {margin-bottom: 10px;}
     </style>
     <form th:action="@{/board/modify}" th:method="post" id="frmSend">
       <div class="form-group">
@@ -70,14 +70,11 @@
         </div>
       </div>
     </div>
-    <style>
-
-    </style>
     <script th:inline="javascript">
       // document의 태그를 모두 읽고 난뒤 실행되는 함수
       window.onload = function(){
-        loadJSONData();
-        function loadJSONData() {
+        loadReplyJSON();
+        function loadReplyJSON() {
           const bno = [[${boardDTO.bno}]]
           const url = /*[[@{/replies/board/}]]*/'url'
           const listGroup = document.querySelector(".replyList")
@@ -87,16 +84,22 @@
             console.log(data)
             let str = "";
             for(let i=0;i<data.length;i++) {
-              str += `<div class="card-body form-control mb-1" style="padding: 5px 20px"
+              str += `<div class="card-body form-control mb-1"
               onmouseover="this.style.background='#d6e6ff'"
               onmouseout="this.style.background='white'"
               data-rno="${data[i].rno}" data-text="${data[i].text}"
-              data-replyer="${data[i].replyer}" style="cursor:pointer;">
-              <h4>${data[i].rno}</h4>
-              <h5 class="card-text" style="display:inline-block;width:300px">${data[i].text}</h5>
-              <h6 class="card-subtitle text-muted"
-                style="display:inline-block;">${data[i].replyer}</h6>
-              <p class="card-text" style="display:inline-block;">${formatDateTime(data[i].regDate)}</p>
+              data-replyer="${data[i].replyer}"
+              style="padding: 5px 20px;cursor:pointer;">
+                <div style="display:inline-block;width:49%;">
+                  <h6 style="display:inline-block;width:70px">${data[i].rno}</h6>
+                  <h5 class="card-text" style="display:inline-block;">${data[i].text}</h5>
+                </div>
+                <div style="display:inline-block;width:48%;text-align: right;right-padding:20px;">
+                  <span class="card-subtitle text-muted">${data[i].replyer}</span>
+                  <span class="card-subtitle text-muted"
+                  style="display:inline-block;width:150px;color:rgb(148 163 184);"
+                  >${formatDateTime(data[i].regDate)}</span>
+                </div>
               </div>`
             }
             listGroup.innerHTML = str
