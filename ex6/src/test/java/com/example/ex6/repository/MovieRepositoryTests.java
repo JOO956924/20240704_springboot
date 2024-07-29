@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Commit;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -61,6 +62,43 @@ class MovieRepositoryTests {
     Page<Object[]> result = movieRepository.getListPageImg(pageRequest);
     for (Object[] objArr : result.getContent()) {
       System.out.println(Arrays.toString(objArr));
+    }
+  }
+  @Test
+  public void testGetListPageImgNative() {
+    PageRequest pageRequest =
+        PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "movie_mno"));
+    Page<Object[]> result = movieRepository.getListPageImgNative(pageRequest);
+    for (Object[] objArr : result.getContent()) {
+      System.out.println(Arrays.toString(objArr));
+    }
+  }
+
+  @Test
+  public void testGetListPageImgJPQL() {
+    PageRequest pageRequest =
+        PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "mno"));
+    Page<Object[]> result = movieRepository.getListPageImgJPQL(pageRequest);
+    for (Object[] objArr : result.getContent()) {
+      System.out.println(Arrays.toString(objArr));
+    }
+  }
+
+  @Test
+  public void testMaxQuery() {
+    PageRequest pageRequest =
+        PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "movie"));
+    Page<Object[]> result = movieRepository.getMaxQuery(pageRequest);
+    for (Object[] objArr : result.getContent()) {
+      System.out.println(Arrays.toString(objArr));
+    }
+  }
+
+  @Test
+  public void testGetMovieWithAll() {
+    List<Object[]> result = movieRepository.getMovieWithAll(98L);
+    for (Object[] arr : result) {
+      System.out.println(Arrays.toString(arr));
     }
   }
 }
