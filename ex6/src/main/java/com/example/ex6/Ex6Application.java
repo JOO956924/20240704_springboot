@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableJpaAuditing //BasicEntity를 사용하기 위함.
 @EnableJpaRepositories(basePackages = "com.example.ex6.repository")
-
 public class Ex6Application {
 
 	public static void main(String[] args) {

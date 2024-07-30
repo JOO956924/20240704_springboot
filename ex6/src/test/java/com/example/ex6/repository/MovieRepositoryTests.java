@@ -85,7 +85,7 @@ class MovieRepositoryTests {
   }
 
   @Test
-  public void testMaxQuery() {
+  public void testGetMaxQuery() {
     PageRequest pageRequest =
         PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "movie"));
     Page<Object[]> result = movieRepository.getMaxQuery(pageRequest);
@@ -96,7 +96,7 @@ class MovieRepositoryTests {
 
   @Test
   public void testGetMovieWithAll() {
-    List<Object[]> result = movieRepository.getMovieWithAll(98L);
+    List<Object[]> result = movieRepository.getMovieWithAll(100L);
     for (Object[] arr : result) {
       System.out.println(Arrays.toString(arr));
     }
