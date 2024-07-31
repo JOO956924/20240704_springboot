@@ -13,9 +13,10 @@
                placeholder="타이틀을 입력하세요">
       </div>
       <div class="form-group">
-        <label for="fileInput">Image Files</label>
-        <input type="file"  id="fileInput" class="custom-file-input form-control files"
-                  multiple>
+        <label for="fileInput">Select Image Files</label>
+        <input type="file" id="fileInput" class="custom-file-input form-control files"
+               multiple></input>
+        <label class="custom-file-label"></label>
       </div>
       <div class="box"></div>
       <div class="form-group">
@@ -26,8 +27,29 @@
       function checkExtension(fileName, fileSize){
         maxSize = 1024*1024*10;
         if(fileSize >= maxSize) {alert("파일사이즈 초과");return false; }
+        // https://developer.mozilla.org/ko/docs/Web/JavaScript/Guide/Regular_expressions
         //const regex = new RegExp("(.*?)\.(exe|sh|zip|alz|tiff)$");
-        const regex = new RegExp("(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$",'i'); //i대소문자구분x
+        const regex = new RegExp("(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$",'i');//i대소문자구분X
+        if(!regex.test(fileName)) {alert("해당파일 업로드 금지!");return false; }
+        return true
+      }
+      const fileInput = document.querySelector("#fileInput")
+      fileInput.onchange = function() {
+        const fileName = fileInput.value.split("\\").pop();
+        let label = document.querySelector(".custom-file-label")
+        label.innerHTML =
+          (fileInput.files.length-1) == 0 ? "" :
+            `${fileName} 외 ${fileInput.files.length-1}개`
+        let appended = false; // 파일이 잘 추가되는지 확인
+        for(let i=0;i<fileInput.file.length;i++) {
+          if(!checkExtension(fileInput.files[i].name, fileInput.files.size)) {
+            label.innerHTML = ''; fileInput.value = '';
+            return false
+          }
+          formData.append("uploadFiles", fileInput.files[i])
+          appended = true;
+        }
+
       }
       btnSend = document.querySelector("#btnSend");
       btnSend.onclick = function(e) {
