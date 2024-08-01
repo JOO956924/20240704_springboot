@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class MovieServiceImpl implements MovieService {
     Page<Object[]> result = movieRepository.getListPageImg(pageable);
     Function<Object[], MovieDTO> fn = objects -> entityToDto(
         (Movie) objects[0],
-        (List<MovieImage>) (Arrays.asList((MovieImage)objects[1])),
+        (List<MovieImage>) (Arrays.asList((MovieImage) objects[1])),
         (Double) objects[2],
         (Long) objects[3]
     );
@@ -61,9 +62,10 @@ public class MovieServiceImpl implements MovieService {
   public MovieDTO getMovie(Long mno) {
     List<Object[]> result = movieRepository.getMovieWithAll(mno);
     Movie movie = (Movie) result.get(0)[0];
-    List<MovieImage> movieImageList = (List<MovieImage>) result.get(0)[1];
+    List<MovieImage> movieImages = new ArrayList<>();
+    result.forEach(objects -> movieImages.add((MovieImage) objects[1]));
     Double avg = (Double) result.get(0)[2];
-    Long MovieCount = (Long) result.get(0)[3];
-    return null;
+    Long reviewCnt = (Long) result.get(0)[3];
+    return entityToDto(movie, movieImages, avg, reviewCnt);
   }
 }

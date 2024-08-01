@@ -1,48 +1,65 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<style>
+  .form-group {margin-bottom: 10px;}
+  .uploadResult {width: 100%;background:gray;margin-top:10px;}
+  .uploadResult ul {
+    display: flex;flex-flow:row;justify-content:center;
+    align-items:center;vertical-align:top;overflow: auto;
+  }
+  .uploadResult ul li {list-style:none;padding:10px;margin-left:2em;}
+  .uploadResult ul li img {width: 100px;}
+</style>
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
   <th:block th:fragment="content">
-    <h1 class="mt-4">Board Read Page</h1>
-    <style>
-      .form-group {margin-bottom: 10px;}
-    </style>
-    <form th:action="@{/board/modify}" th:method="post" id="frmSend">
+    <h1 class="mt-4">Movie Read Page</h1>
+    <form th:action="@{/movie/modify}" th:method="post" id="frmSend">
       <div class="form-group">
-        <label for="bno">Bno</label>
-        <input type="text" name="bno" id="bno" class="form-control"
-               th:value="${boardDTO.bno}" readonly>
+        <label for="mno">Mno</label>
+        <input type="text" name="mno" id="mno" class="form-control"
+               th:value="${movieDTO.mno}" readonly>
       </div>
       <div class="form-group">
         <label for="title">Title</label>
         <input type="text" name="title" id="title" class="form-control"
-               th:value="${boardDTO.title}" readonly>
+               th:value="${movieDTO.title}" readonly>
       </div>
       <div class="form-group">
-        <label for="content">Content</label>
-        <textarea type="text" name="content" id="content" class="form-control"
-                  th:text="${boardDTO.content}" readonly></textarea>
+        <label for="reviewCnt">Review Count</label>
+        <input type="text" name="reviewCnt" id="reviewCnt" class="form-control"
+                  th:value="${movieDTO.reviewCnt}" readonly>
       </div>
       <div class="form-group">
-        <label for="writerEmail">Writer Email</label>
-        <input type="text" name="writerEmail" id="writerEmail" class="form-control"
-               th:value="${boardDTO.writerEmail}" readonly>
+        <label for="avg">Average</label>
+        <input type="text" name="avg" id="avg" class="form-control"
+                  th:value="${movieDTO.avg}" readonly>
       </div>
       <div class="form-group">
         <label for="regDate">RegDate</label>
         <input type="text" name="regDate" id="regDate" class="form-control" readonly
-               th:value="${#temporals.format(boardDTO.regDate, 'yyyy/MM/dd hh:mm')}">
+               th:value="${#temporals.format(movieDTO.regDate, 'yyyy/MM/dd hh:mm')}">
       </div>
       <div class="form-group">
         <label for="modDate">ModDate</label>
         <input type="text" name="modDate" id="modDate" class="form-control" readonly
-               th:value="${#temporals.format(boardDTO.modDate, 'yyyy/MM/dd hh:mm')}">
+               th:value="${#temporals.format(movieDTO.modDate, 'yyyy/MM/dd hh:mm')}">
+      </div>
+      <div class="uploadResult">
+        <ul>
+          <li th:each="movieImageDTO : ${movieDTO.imageDTOList}"
+              th:data-file="${movieImageDTO.getThumbnailURL}" style="cursor:pointer;">
+            <img 
+                th:if="${movieImageDTO.path != null}"
+                th:src="|@{/display(fileName=${movieImageDTO.getThumbnailURL})}|">
+          </li>
+        </ul>
       </div>
       <div class="form-group">
-        <a th:href="@{/board/modify(bno=${boardDTO.bno},
+        <a th:href="@{/movie/modify(mno=${movieDTO.mno},
                       page=${pageRequestDTO.page},type=${pageRequestDTO.type},
                       keyword=${pageRequestDTO.keyword})}"
            class="btn btn-primary">Modify</a>
-        <a th:href="@{/board/list(page=${pageRequestDTO.page},
+        <a th:href="@{/movie/list(page=${pageRequestDTO.page},
                       type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}"
            class="btn btn-info">List</a>
       </div>
@@ -50,13 +67,13 @@
     <div>
       <div class="mt-4">
         <h5>
-          <span class="btn btn-outline-secondary addReply">Add Reply</span>
-          <span style="font-size:9pt">댓글:
-            <span id="repCnt" th:text="${boardDTO.replyCount}"></span> 개
+          <span class="btn btn-outline-secondary addReview">Add Review</span>
+          <span style="font-size:9pt">Review :
+            <span id="repCnt" th:text="${movieDTO.reviewCnt}"></span> 개
           </span>
         </h5>
       </div>
-      <div class="list-group replyList"></div>
+      <div class="list-group reviewList" style="margin-bottom:50px;"></div>
     </div>
     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -76,15 +93,16 @@
     </div>
     <script th:inline="javascript">
       // document의 태그를 모두 읽고 난뒤 실행되는 함수
+      /*
       window.onload = function(){
-        var bno = [[${boardDTO.bno}]]
-        loadReplyJSON();
+        var mno = [[${movieDTO.mno}]]
+        loadReviewJSON();
         var myModal = new bootstrap.Modal(document.querySelector('#myModal'),
                           { backdrop: true });
-        function loadReplyJSON() {
-          const url = /*[[@{/replies/board/}]]*/'url'
-          const listGroup = document.querySelector(".replyList")
-          fetch(url+bno, {method: 'GET',})
+        function loadReviewJSON() {
+          const url = /*[[@{/reviews/movie/}]]*/'url'
+          const listGroup = document.querySelector(".reviewList")
+          fetch(url+mno, {method: 'GET',})
           .then(response => response.json())
           .then(data => {
             // console.log(data)
@@ -94,14 +112,14 @@
               onmouseover="this.style.background='#d6e6ff'"
               onmouseout="this.style.background='white'"
               data-rno="${data[i].rno}" data-text="${data[i].text}"
-              data-replyer="${data[i].replyer}"
+              data-reviewer="${data[i].reviewer}"
               style="padding: 5px 20px;cursor:pointer;">
                 <div style="display:inline-block;width:49%;">
                   <h6 style="display:inline-block;width:70px">${data[i].rno}</h6>
                   <h5 class="card-text" style="display:inline-block;">${data[i].text}</h5>
                 </div>
                 <div style="display:inline-block;width:48%;text-align: right;right-padding:20px;">
-                  <span class="card-subtitle text-muted">${data[i].replyer}</span>
+                  <span class="card-subtitle text-muted">${data[i].reviewer}</span>
                   <span class="card-subtitle text-muted"
                   style="display:inline-block;width:150px;color:rgb(148 163 184);"
                   >${formatDateTime(data[i].regDate)}</span>
@@ -114,12 +132,12 @@
               cardBody[i].onclick = function() {
                 let rno = cardBody[i].dataset.rno;
                 let text = cardBody[i].dataset.text;
-                let replyer = cardBody[i].dataset.replyer;
+                let reviewer = cardBody[i].dataset.reviewer;
                 document.querySelector('#exampleModalLabel').textContent = rno+'번 댓글'
                 document.querySelector(".modal-body").innerHTML =
                   `<input type="hidden" name="rno" value="${rno}" readonly>
                    <input type="text" class="form-control" name="text" value="${text}">
-                   <input type="text" class="form-control" name="replyer" value='${replyer}'>
+                   <input type="text" class="form-control" name="reviewer" value='${reviewer}'>
                   `
                 document.querySelector(".modal-footer").innerHTML =
                   `<button type="button" class="btn btn-danger remove">댓글 삭제</button>
@@ -129,16 +147,16 @@
                 document.querySelector(".modal-footer .modify").onclick = function () {
                   let rno = document.querySelector("input[name='rno']")
                   let text = document.querySelector("input[name='text']")
-                  let replyer = document.querySelector("input[name='replyer']")
+                  let reviewer = document.querySelector("input[name='reviewer']")
 
                   if(!text.value) {text.setAttribute('placeholder', '댓글입력하세요');return;}
-                  if(!replyer.value) {replyer.setAttribute('placeholder', '작성자입력하세요');return;}
-                  let reply = {rno: rno.value,bno: bno,text: text.value,replyer: replyer.value}
-                  const url = /*[[@{/replies/}]]*/'url';
+                  if(!reviewer.value) {reviewer.setAttribute('placeholder', '작성자입력하세요');return;}
+                  let review = {rno: rno.value,mno: mno,text: text.value,reviewer: reviewer.value}
+                  const url = /*[[@{/reviews/}]]*/'url';
                   fetch(url, {
                     method: 'PUT',
                     headers: {'Content-type': 'application/json'},
-                    body: JSON.stringify(reply)
+                    body: JSON.stringify(review)
                   })
                   .then(res => res.json())
                   .then(function(data){
@@ -146,13 +164,13 @@
                     document.querySelector(".modal-body").innerHTML=`${data}번 댓글 수정 완료.`
                     document.querySelector(".modal-footer .modify").style.display = 'none'
                     document.querySelector(".modal-footer .remove").style.display = 'none'
-                    loadReplyJSON()
+                    loadReviewJSON()
                   })
                   .catch(err => console.log('myError', err))
                 }
                 document.querySelector(".modal-footer .remove").onclick = function () {
                   let rno = document.querySelector("input[name='rno']")
-                  const url = /*[[@{/replies/}]]*/'url';
+                  const url = /*[[@{/reviews/}]]*/'url';
                   fetch(url + rno.value, {
                     method: 'DELETE',
                     headers: {'Content-type': 'application/json'},
@@ -165,7 +183,7 @@
                     document.querySelector(".modal-footer .remove").style.display = 'none'
                     document.querySelector("#repCnt").textContent =
                       parseInt(document.querySelector("#repCnt").textContent) - 1
-                    loadReplyJSON()
+                    loadReviewJSON()
                   })
                   .catch(err => console.log('myError', err))
                 }
@@ -183,12 +201,12 @@
         function len2(num) {
           return (num<10) ? "0"+num : num;
         }
-        document.querySelector('.addReply').onclick = function() {
+        document.querySelector('.addReview').onclick = function() {
           document.querySelector('#exampleModalLabel').textContent = '댓글 추가'
           document.querySelector(".modal-body").innerHTML =
             `
-            <input type="text" class="form-control" name="text" placeholder="Reply...">
-            <input type="text" class="form-control" name="replyer" value='user50@a.a'>
+            <input type="text" class="form-control" name="text" placeholder="Review...">
+            <input type="text" class="form-control" name="reviewer" value='user50@a.a'>
             `
           document.querySelector(".modal-footer").innerHTML =
             `
@@ -197,16 +215,16 @@
             `
           document.querySelector(".modal-footer .save").onclick = function () {
             let text = document.querySelector("input[name='text']")
-            let replyer = document.querySelector("input[name='replyer']")
+            let reviewer = document.querySelector("input[name='reviewer']")
 
             if(!text.value) {text.setAttribute('placeholder', '댓글입력하세요');return;}
-            if(!replyer.value) {replyer.setAttribute('placeholder', '작성자입력하세요');return;}
-            let reply = {bno: bno, text: text.value, replyer: replyer.value}
-            const url = /*[[@{/replies/}]]*/'url';
+            if(!reviewer.value) {reviewer.setAttribute('placeholder', '작성자입력하세요');return;}
+            let review = {mno: mno, text: text.value, reviewer: reviewer.value}
+            const url = /*[[@{/reviews/}]]*/'url';
             fetch(url, {
               method: 'POST',
               headers: {'Content-type': 'application/json'},
-              body: JSON.stringify(reply)
+              body: JSON.stringify(review)
             })
             .then(res => res.json())
             .then(function(data){
@@ -215,7 +233,7 @@
               document.querySelector(".modal-footer .save").style.display = 'none'
               document.querySelector("#repCnt").textContent =
                 parseInt(document.querySelector("#repCnt").textContent) + 1
-              loadReplyJSON()
+              loadReviewJSON()
             })
           }
           myModal.show()
@@ -235,7 +253,7 @@
           myModal.show()
         }
       }
-
+      */
     </script>
   </th:block>
 

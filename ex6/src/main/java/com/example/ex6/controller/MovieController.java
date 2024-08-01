@@ -35,4 +35,11 @@ public class MovieController {
     model.addAttribute("pageResultDTO", movieService.getList(pageRequestDTO));
     return "/movie/list";
   }
+
+  @GetMapping("/read")
+  public void getMovie(Long mno, PageRequestDTO pageRequestDTO, Model model) {
+    MovieDTO movieDTO = movieService.getMovie(mno);
+    model.addAttribute("movieDTO", movieDTO);
+
+  }
 }
