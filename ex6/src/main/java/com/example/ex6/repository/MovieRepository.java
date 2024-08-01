@@ -13,6 +13,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 //  select m.mno, avg(coalesce(r.grade,0)), count(r.reviewnum)
 //  from movie m left outer join review r on m.mno = r.movie_mno
 //  group by m.mno;
+
   // 영화에 대한 리뷰의 평점과 댓글 갯수를 출력
   @Query("select m, avg(coalesce(r.grade, 0)), count(distinct r) " +
       "from Movie m left outer join Review r on r.movie=m group by m ")

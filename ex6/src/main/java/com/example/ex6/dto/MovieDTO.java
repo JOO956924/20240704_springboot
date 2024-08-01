@@ -19,7 +19,7 @@ public class MovieDTO {
   @Builder.Default // @AllArgsConstructor가 없으면 에러,기본값초기화
   private List<MovieImageDTO> imageDTOList = new ArrayList<>();
   private double avg;
-  private int reviewCnt;
+  private Long reviewCnt;
   private LocalDateTime regDate;
   private LocalDateTime modDate;
 }

@@ -2,6 +2,8 @@ package com.example.ex6.service;
 
 import com.example.ex6.dto.MovieDTO;
 import com.example.ex6.dto.MovieImageDTO;
+import com.example.ex6.dto.PageRequestDTO;
+import com.example.ex6.dto.PageResultDTO;
 import com.example.ex6.entity.Movie;
 import com.example.ex6.entity.MovieImage;
 
@@ -13,6 +15,8 @@ import java.util.stream.Collectors;
 
 public interface MovieService {
   Long register(MovieDTO movieDTO);
+
+  PageResultDTO<MovieDTO, Object[]> getList(PageRequestDTO pageRequestDTO);
 
   //
   default Map<String, Object> dtoToEntity(MovieDTO movieDTO){
@@ -42,7 +46,7 @@ public interface MovieService {
   }
 
   default MovieDTO entityToDto(Movie movie, List<MovieImage> movieImageList
-      , Double avg, int reviewCnt){
+      , Double avg, Long reviewCnt){
     MovieDTO movieDTO = MovieDTO.builder()
         .mno(movie.getMno())
         .title(movie.getTitle())
@@ -62,6 +66,7 @@ public interface MovieService {
           }
         }
     ).collect(Collectors.toList());
+    movieDTO.setImageDTOList(movieImageDTOList);
     movieDTO.setAvg(avg);
     movieDTO.setReviewCnt(reviewCnt);
     return movieDTO;

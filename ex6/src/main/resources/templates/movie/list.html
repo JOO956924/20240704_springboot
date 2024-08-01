@@ -2,10 +2,10 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
   <th:block th:fragment="content">
-    <h1 class="mt-4">Board List Page
-      <a class="btn btn-outline-primary" th:href="@{/board/register}">Register</a>
+    <h1 class="mt-4">Movie List Page
+      <a class="btn btn-outline-primary" th:href="@{/movie/register}">Register</a>
     </h1>
-    <form th:action="@{/board/list}" id="frmSearch" method="get">
+    <form th:action="@{/movie/list}" id="frmSearch" method="get">
       <div class="input-group">
         <div class="input-group-prepend" style="margin-right:10px;">
           <select class="form-control" id="type" name="type">
@@ -27,37 +27,39 @@
     <table class="table table-striped">
       <thead>
       <tr>
-        <th scope="col">Bno</th>
-        <th scope="col">Title</th>
-        <th scope="col">Writer</th>
+        <th scope="col">Mno</th>
+        <th scope="col">Title & Pictures</th>
+        <th scope="col">Review Count</th>
+        <th scope="col">Average Rating</th>
         <th scope="col">RegDate</th>
       </tr>
       </thead>
       <tbody>
-      <tr th:each="boardDTO : ${pageResultDTO.dtoList}" style="cursor:pointer;"
-          th:onclick="goRead([[${boardDTO.bno}]],[[${pageResultDTO.page}]],[[${pageRequestDTO.type}]], [[${pageRequestDTO.keyword}]])"
+      <tr th:each="movieDTO : ${pageResultDTO.dtoList}" style="cursor:pointer;"
+          th:onclick="goRead([[${movieDTO.mno}]],[[${pageResultDTO.page}]],[[${pageRequestDTO.type}]], [[${pageRequestDTO.keyword}]])"
           onmouseover="this.style.background='#d6e6ff'"
           onmouseout="this.style.background='white'">
-        <th scope="row">[[${boardDTO.bno}]]</th>
-        <td>[[${boardDTO.title}]] ___ [<b th:text="${boardDTO.replyCount}"></b>]</td>
-        <td>[[${boardDTO.writerName}]]<small>([[${boardDTO.writerEmail}]])</small></td>
-        <td>[[${#temporals.format(boardDTO.regDate, 'yyyy/MM/dd hh:mm')}]]</td>
+        <th scope="row">[[${movieDTO.mno}]]</th>
+        <td><img th:src="|@{/display(fileName=${movieDTO.imageDTOList[0].getThumbnailURL()})}|">[[${movieDTO.title}]]</td>
+        <td><b th:text="${movieDTO.reviewCnt}"></b></td>
+        <td><b th:text="${movieDTO.avg}"></b></td>
+        <td>[[${#temporals.format(movieDTO.regDate, 'yyyy/MM/dd hh:mm')}]]</td>
       </tr>
       </tbody>
     </table>
     <ul class="pagination h-100 justify-content-center align-items-center">
       <li class="page-item " th:if="${pageResultDTO.prev}">
         <a class="page-link" tabindex="-1"
-           th:href="@{/board/list(page=${pageResultDTO.start-1})}">Prev</a>
+           th:href="@{/movie/list(page=${pageResultDTO.start-1})}">Prev</a>
       </li>
       <li th:each="page : ${pageResultDTO.pageList}"
           th:class=" 'page-item ' + ${pageResultDTO.page == page?'active':''} ">
         <a class="page-link"
-           th:href="@{/board/list(page=${page},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}">[[${page}]]</a>
+           th:href="@{/movie/list(page=${page},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}">[[${page}]]</a>
       </li>
       <li class="page-item " th:if="${pageResultDTO.next}">
         <a class="page-link"
-           th:href="@{/board/list(page=${pageResultDTO.end+1})}">Next</a>
+           th:href="@{/movie/list(page=${pageResultDTO.end+1})}">Next</a>
       </li>
     </ul>
     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -108,7 +110,7 @@
         }
         type.onchange = () => {
           if(type.options[0].selected) {
-            location.href = /*[[@{/board/list}]]*/'url'
+            location.href = /*[[@{/movie/list}]]*/'url'
           } else {
             keyword.disabled = false;
             btnSearch.disabled = false;
@@ -118,9 +120,9 @@
         keyword.disabled = requestKeyword?false:true;
         btnSearch.disabled = requestKeyword?false:true;
       }
-      function goRead(bno, page, type, keyword){
-        url = /*[[@{/board/read}]]*/'url'
-        location.href = url + `?bno=${bno}&page=${page}&type=${type}&keyword=${keyword}`
+      function goRead(mno, page, type, keyword){
+        url = /*[[@{/movie/read}]]*/'url'
+        location.href = url + `?mno=${mno}&page=${page}&type=${type}&keyword=${keyword}`
       }
     </script>
   </th:block>
