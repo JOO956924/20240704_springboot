@@ -40,7 +40,8 @@
           onmouseover="this.style.background='#d6e6ff'"
           onmouseout="this.style.background='white'">
         <th scope="row">[[${movieDTO.mno}]]</th>
-        <td><img th:src="|@{/display(fileName=${movieDTO.imageDTOList[0].getThumbnailURL()})}|">[[${movieDTO.title}]]</td>
+        <td><img th:if="${movieDTO.imageDTOList.size()>0 && movieDTO.imageDTOList[0].path != null}"
+            th:src="|@{/display(fileName=${movieDTO.imageDTOList[0].getThumbnailURL()})}|">[[${movieDTO.title}]]</td>
         <td><b th:text="${movieDTO.reviewCnt}"></b></td>
         <td><b th:text="${movieDTO.avg}"></b></td>
         <td>[[${#temporals.format(movieDTO.regDate, 'yyyy/MM/dd hh:mm')}]]</td>

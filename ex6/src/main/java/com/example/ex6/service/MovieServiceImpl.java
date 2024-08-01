@@ -56,4 +56,14 @@ public class MovieServiceImpl implements MovieService {
     );
     return new PageResultDTO<>(result, fn);
   }
+
+  @Override
+  public MovieDTO getMovie(Long mno) {
+    List<Object[]> result = movieRepository.getMovieWithAll(mno);
+    Movie movie = (Movie) result.get(0)[0];
+    List<MovieImage> movieImageList = (List<MovieImage>) result.get(0)[1];
+    Double avg = (Double) result.get(0)[2];
+    Long MovieCount = (Long) result.get(0)[3];
+    return null;
+  }
 }
