@@ -59,7 +59,7 @@
         const targetDiv = this.closest('div')
         const removeUrl = /*[[@{/removeFile?fileName=}]]*/'removeUrl'
         fetch(removeUrl+fileName, {
-          method: 'POST', fileName: fileName
+          method: 'POST', dataType: 'json', fileName: fileName
         })
         .then(response => response.json())
         .then(json => {

@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class MovieServiceImpl implements MovieService{
+public class MovieServiceImpl implements MovieService {
   private final MovieRepository movieRepository;
   private final MovieImageRepository movieImageRepository;
 
@@ -33,6 +33,6 @@ public class MovieServiceImpl implements MovieService{
         movieImageRepository.save(movieImage);
       }
     });
-    return movieDTO.getMno();
+    return movie.getMno();
   }
 }

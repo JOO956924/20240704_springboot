@@ -12,8 +12,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @Log4j2
-@RequiredArgsConstructor
 @RequestMapping("/movie")
+@RequiredArgsConstructor
 public class MovieController {
   private final MovieService movieService;
 

@@ -16,9 +16,9 @@ import java.util.List;
 public class MovieDTO {
   private Long mno;
   private String title;
-  @Builder.Default //@AllArgsConstructor가 없으면 에러, 기본값 초기화
+  @Builder.Default // @AllArgsConstructor가 없으면 에러,기본값초기화
   private List<MovieImageDTO> imageDTOList = new ArrayList<>();
-  private Double avg;
+  private double avg;
   private int reviewCnt;
   private LocalDateTime regDate;
   private LocalDateTime modDate;

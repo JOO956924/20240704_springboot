@@ -5,6 +5,13 @@
     <h1 class="mt-4">Movie Register Page</h1>
     <style>
       .form-group {margin-bottom: 30px;}
+      .uploadResult {width: 100%;background:gray;margin-top:10px;}
+      .uploadResult ul {
+        display: flex;flex-flow:row;justify-content:center;
+        align-items:center;vertical-align:top;overflow: auto;
+      }
+      .uploadResult ul li {list-style:none;padding:10px;margin-left:2em;}
+      .uploadResult ul li img {width: 100px;}
     </style>
     <form th:action="@{/movie/register}" th:method="post" id="frmSend">
       <div class="form-group">
@@ -16,13 +23,17 @@
         <label for="fileInput">Select Image Files</label>
         <input type="file" id="fileInput" class="custom-file-input form-control files"
                multiple></input>
-        <label class="custom-file-label"></label>
+        <label id="custom-label"></label>
       </div>
-      <div class="box"></div>
+      <div class="box"></div> <!--submit 버튼을 누를 때 필요한 자료 두는 곳-->
       <div class="form-group">
         <button type="submit" id="btnSend" class="btn btn-primary">Submit</button>
       </div>
     </form>
+    <div class="uploadResult"><!--file의 onchange 후에 보여질 섬네일 보여주는 영역-->
+      <ul></ul>
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script th:inline="javascript">
       function checkExtension(fileName, fileSize){
         maxSize = 1024*1024*10;
@@ -35,29 +46,90 @@
       }
       const fileInput = document.querySelector("#fileInput")
       fileInput.onchange = function() {
+        let formData = new FormData();
         const fileName = fileInput.value.split("\\").pop();
-        let label = document.querySelector(".custom-file-label")
+        let label = document.querySelector("#custom-label")
         label.innerHTML =
           (fileInput.files.length-1) == 0 ? "" :
-            `${fileName} 외 ${fileInput.files.length-1}개`
+                `${fileName} 외 ${fileInput.files.length-1}개`
         let appended = false; // 파일이 잘 추가되는지 확인
-        for(let i=0;i<fileInput.file.length;i++) {
+        for(let i=0;i<fileInput.files.length;i++) {
           if(!checkExtension(fileInput.files[i].name, fileInput.files.size)) {
             label.innerHTML = ''; fileInput.value = '';
-            return false
+            appended = false;break;
           }
           formData.append("uploadFiles", fileInput.files[i])
           appended = true;
         }
-
+        if(!appended) return;
+        for(const value of formData.values()) console.log(value)
+        const url = /*[[@{/uploadAjax}]]*/'url'
+        fetch(url, {
+          method: 'POST', body: formData, dataType: 'json'
+        })
+        .then(res => res.json())
+        .then(json => {console.log(json);showResult(json);})
+        .catch(err => console.log('Error: ', err))
       }
+      function showResult(arr) {
+        const uploadUL = document.querySelector(".uploadResult ul");
+        let str = ""
+        const url = /*[[@{/display}]]*/'url'
+        for(let i=0;i<arr.length;i++){
+          str += `<li data-name='${arr[i].fileName}' data-path='${arr[i].folderPath}'
+          data-uuid='${arr[i].uuid}' data-file='${arr[i].imageURL}'><div>
+          <button class="removeBtn" type="button">X</button>
+          <img src="${url}?fileName=${arr[i].thumbnailURL}">
+          </div></li>`
+        }
+        uploadUL.innerHTML = str;
+        const removeBtns = document.querySelectorAll(".removeBtn");
+        for(let i=0;i<removeBtns.length;i++){
+          removeBtns[i].onclick = function() {
+            const removeUrl = /*[[@{/removeFile?fileName=}]]*/'removeUrl'
+            const targetLi = this.closest('li')
+            const fileName = targetLi.dataset.file;
+            /*fetch(removeUrl+fileName, {
+              method: 'POST', dataType: 'json', fileName: fileName
+            })
+            .then(response => response.json())
+            .then(json => {
+              console.log(json)
+              if(json === true) targetLi.remove()
+              document.querySelector("#custom-label").innerHTML = ''
+              document.querySelector("#fileInput").value = '';
+            })
+            .catch(err => console.log("Error occurred: ", err))
+            */
+            axios({
+              method: "POST",
+              url: removeUrl+fileName,
+            }).then(res => {
+              if(res.data === true) targetLi.remove();
+              document.querySelector("#custom-label").innerHTML = '';
+              document.querySelector("#fileInput").value = '';
+            }).catch(err => {
+              console.log(err);
+            });
+          }
+        }
+      }
+
       btnSend = document.querySelector("#btnSend");
       btnSend.onclick = function(e) {
         e.preventDefault();
-        title = document.getElementById("title")
-        writerEmail = document.querySelector("#writerEmail")
+        const title = document.getElementById("title")
         if(title.value == "") {title.focus();return false;}
-        if(writerEmail.value == "") {writerEmail.focus();return false;}
+        let str = "";
+        const liArr = document.querySelectorAll(".uploadResult ul li");
+        for(let i=0;i<liArr.length;i++){
+          str += `
+            <input type="hidden" name="imageDTOList[${i}].imgName" value="${liArr[i].dataset.name}">
+            <input type="hidden" name="imageDTOList[${i}].path" value="${liArr[i].dataset.path}">
+            <input type="hidden" name="imageDTOList[${i}].uuid" value="${liArr[i].dataset.uuid}">
+          `
+        }
+        document.querySelector(".box").innerHTML = str;
         document.querySelector("#frmSend").submit();
       }
 

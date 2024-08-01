@@ -141,7 +141,7 @@
                     body: JSON.stringify(reply)
                   })
                   .then(res => res.json())
-                  .then(async function(data){
+                  .then(function(data){
                     document.querySelector("#exampleModalLabel").innerHTML=`수정 알림`
                     document.querySelector(".modal-body").innerHTML=`${data}번 댓글 수정 완료.`
                     document.querySelector(".modal-footer .modify").style.display = 'none'

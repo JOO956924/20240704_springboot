@@ -42,8 +42,8 @@ public class UploadController {
       String fileName = originalName.substring(originalName.lastIndexOf("\\") + 1);
       log.info("fileName: " + fileName);
 
-      String folderPath = makeFolder();
-      String uuid = UUID.randomUUID().toString();
+      String folderPath = makeFolder(); // yyyy/MM/dd
+      String uuid = UUID.randomUUID().toString(); //unique
       String saveName = uploadPath + File.separator + folderPath + File.separator
           + uuid + "_" + fileName;
       Path savePath = Paths.get(saveName);
@@ -86,6 +86,7 @@ public class UploadController {
 
   @PostMapping("/removeFile")
   public ResponseEntity<Boolean> removeFile(String fileName) {
+    log.info("remove fileName: "+fileName);
     String searchFilename = null;
     try {
       searchFilename = URLDecoder.decode(fileName, "UTF-8");
@@ -94,6 +95,7 @@ public class UploadController {
       File thumbnail = new File(file.getParent(), "s_" + file.getName());
       boolean result2 = thumbnail.delete();
       boolean tmp = result1 && result2;
+      log.info(">>", tmp + "=" + result1 + "&&" + result2);
       return new ResponseEntity<>(tmp,
           tmp ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
     } catch (Exception e) {
