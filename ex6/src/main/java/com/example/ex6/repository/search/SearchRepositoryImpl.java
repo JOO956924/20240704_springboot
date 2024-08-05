@@ -86,7 +86,7 @@ public class SearchRepositoryImpl extends QuerydslRepositorySupport
             conditionBuilder.or(review.member.email.contains(keyword));
             break;
           case "c":
-            conditionBuilder.or(movieImage.imgName.contains(keyword));
+            conditionBuilder.or(review.text.contains(keyword));
             break;
         }
       }

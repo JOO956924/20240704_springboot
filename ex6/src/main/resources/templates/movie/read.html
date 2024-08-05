@@ -107,6 +107,19 @@
       window.onload = function(){
         var mno = [[${movieDTO.mno}]]
         loadReviewJSON();
+        const uploadResultUlLis = document.querySelectorAll(".uploadResult ul li");
+        for(let i=0;i<uploadResultUlLis.length;i++){
+          uploadResultUlLis[i].onclick = function () {
+            const url = /*[[@{/display}]]*/'url'
+            const file = this.dataset.file;
+            document.querySelector("#exampleModalLabel").textContent = 'Movie Poster'
+            document.querySelector(".modal-body").innerHTML =
+              `<img style="width:100%" src="${url}?fileName=${file}&size=1">`
+            document.querySelector(".modal-footer").innerHTML =
+              `<span class="btn btn-secondary" data-bs-dismiss="modal">Close</span>`
+            myModal.show()
+          }
+        }
         var myModal = new bootstrap.Modal(document.querySelector('#myModal'),
                           { backdrop: true });
 
@@ -250,8 +263,8 @@
             `
           // 모달창에서 댓글 추가하기 버튼 처리
           document.querySelector(".modal-footer .save").onclick = function () {
+            let mid = document.querySelector(".modal-body input[name='mid']")
             let text = document.querySelector(".modal-body input[name='text']")
-            let mid = document.querySelector(".modal-body input[name='text']")
             let grade = parseFloat(document.querySelector(".star span").style.width)*0.01*5;
             let notice = document.querySelector('#notice')
 

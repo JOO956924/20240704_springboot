@@ -65,7 +65,8 @@
             th:data-name='${movieImageDTO.imgName}'
             style="cursor:pointer;">
           <div>
-            <button class="removeBtn" type="button">X</button>
+            <button type="button"
+                    th:onclick="deleteFileDb(this)">X</button>
             <img
                 th:if="${movieImageDTO.path != null}"
                 th:src="|@{/display(fileName=${movieImageDTO.getThumbnailURL})}|">
@@ -110,6 +111,24 @@
         .then(json => {console.log(json);showResult(json);})
         .catch(err => console.log('Error: ', err))
       }
+      function deleteFileDb(btn) {
+            const removeUrl = /*[[@{/removeFile?fileName=}]]*/'removeUrl'
+            const targetLi = btn.closest('li')
+            const fileName = targetLi.dataset.file;
+            const uuid = targetLi.dataset.uuid;
+            fetch(removeUrl+fileName+"&uuid="+uuid, {
+              method: 'POST', dataType: 'json', fileName: fileName
+            })
+            .then(response => response.json())
+            .then(json => {
+              console.log(json)
+              if(json === true) targetLi.remove()
+              document.querySelector("#custom-label").innerHTML = ''
+              document.querySelector("#fileInput").value = '';
+            })
+            .catch(err => console.log("Error occurred: ", err))
+
+      }
       function showResult(arr) {
         const uploadUL = document.querySelector(".uploadResult ul");
         let str = ""
@@ -128,7 +147,7 @@
             const removeUrl = /*[[@{/removeFile?fileName=}]]*/'removeUrl'
             const targetLi = this.closest('li')
             const fileName = targetLi.dataset.file;
-            /*fetch(removeUrl+fileName, {
+            fetch(removeUrl+fileName, {
               method: 'POST', dataType: 'json', fileName: fileName
             })
             .then(response => response.json())
@@ -139,8 +158,8 @@
               document.querySelector("#fileInput").value = '';
             })
             .catch(err => console.log("Error occurred: ", err))
-            */
-            axios({
+
+            /*axios({
               method: "POST",
               url: removeUrl+fileName,
             }).then(res => {
@@ -149,7 +168,7 @@
               document.querySelector("#fileInput").value = '';
             }).catch(err => {
               console.log(err);
-            });
+            });*/
           }
         }
       }

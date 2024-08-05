@@ -60,19 +60,22 @@ public interface MovieService {
         .regDate(movie.getRegDate())
         .modDate(movie.getModDate())
         .build();
-    List<MovieImageDTO> movieImageDTOList = movieImageList.stream().map(
-        movieImage -> {
-          MovieImageDTO movieImageDTO = MovieImageDTO.builder()
-              .imgName(movieImage.getImgName())
-              .path(movieImage.getPath())
-              .uuid(movieImage.getUuid())
-              .build();
-          return movieImageDTO;
-        }
-    ).collect(Collectors.toList());
+    if (movieImageList.size()!=0) {
+      List<MovieImageDTO> movieImageDTOList = movieImageList.stream().map(
+          movieImage -> {
+            MovieImageDTO movieImageDTO = MovieImageDTO.builder()
+                .imgName(movieImage.getImgName())
+                .path(movieImage.getPath())
+                .uuid(movieImage.getUuid())
+                .build();
+            return movieImageDTO;
+          }
+      ).collect(Collectors.toList());
+    }
     movieDTO.setImageDTOList(movieImageDTOList);
     movieDTO.setAvg(avg);
     movieDTO.setReviewCnt(reviewCnt);
     return movieDTO;
   }
+
 }
