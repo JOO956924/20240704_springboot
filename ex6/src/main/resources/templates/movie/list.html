@@ -40,7 +40,8 @@
           onmouseover="this.style.background='#d6e6ff'"
           onmouseout="this.style.background='white'">
         <th scope="row">[[${movieDTO.mno}]]</th>
-        <td><img th:if="${movieDTO.imageDTOList.size()>0 && movieDTO.imageDTOList[0].path != null}"
+        <td><img
+            th:if="${movieDTO.imageDTOList.size()>0 && movieDTO.imageDTOList[0].path != null}"
             th:src="|@{/display(fileName=${movieDTO.imageDTOList[0].getThumbnailURL()})}|">[[${movieDTO.title}]]</td>
         <td><b th:text="${movieDTO.reviewCnt}"></b></td>
         <td><b th:text="${movieDTO.avg}"></b></td>
@@ -82,20 +83,6 @@
     <script th:inline="javascript">
       // document의 태그를 모두 읽고 난뒤 실행되는 함수
       window.onload = function(){
-        var msg = [[${msg}]]
-        // 일회성 msg의 내용이 비거나 history 상태가 비지 않는 경우 return
-        //if(msg === '' || history.state) return
-
-        if(msg) {  // truthy 데이터가 올 경우만 if문 실행
-          const myModal = new bootstrap.Modal(document.querySelector('#myModal'),
-                          { backdrop: true });
-          document.querySelector(".modal-body").innerHTML
-            = `<p>${msg}되었습니다.</p>`
-          myModal.show()
-        }
-        // history 이용해서 모달창 보여준거에 대한 기록을 clear!
-        history.replaceState({}, null, null) //(state, unused, url)
-
         frmSearch = document.querySelector("#frmSearch")
         btnSearch = document.querySelector(".btnSearch")
         type = document.querySelector("#type");
@@ -120,11 +107,26 @@
         const requestKeyword = /*[[${pageRequestDTO.keyword}]]*/'keyword'
         keyword.disabled = requestKeyword?false:true;
         btnSearch.disabled = requestKeyword?false:true;
+
+        var msg = [[${msg}]]
+        // 일회성 msg의 내용이 비거나 history 상태가 비지 않는 경우 return
+        if(msg === '' || history.state) return
+
+        if(msg) {  // truthy 데이터가 올 경우만 if문 실행
+          const myModal = new bootstrap.Modal(document.querySelector('#myModal'),
+                          { backdrop: true });
+          document.querySelector(".modal-body").innerHTML
+            = `<p>${msg}되었습니다.</p>`
+          myModal.show()
+        }
+        // history 이용해서 모달창 보여준거에 대한 기록을 clear!
+        history.replaceState({}, null, null) //(state, unused, url)
       }
       function goRead(mno, page, type, keyword){
         url = /*[[@{/movie/read}]]*/'url'
         location.href = url + `?mno=${mno}&page=${page}&type=${type}&keyword=${keyword}`
       }
+
     </script>
   </th:block>
 </th:block>

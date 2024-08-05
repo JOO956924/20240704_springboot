@@ -5,8 +5,13 @@ import com.example.ex6.dto.PageRequestDTO;
 import com.example.ex6.dto.PageResultDTO;
 import com.example.ex6.entity.Movie;
 import com.example.ex6.entity.MovieImage;
+import com.example.ex6.entity.QMovie;
 import com.example.ex6.repository.MovieImageRepository;
 import com.example.ex6.repository.MovieRepository;
+import com.example.ex6.repository.ReviewRepository;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -14,10 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -27,6 +30,7 @@ import java.util.function.Function;
 public class MovieServiceImpl implements MovieService {
   private final MovieRepository movieRepository;
   private final MovieImageRepository movieImageRepository;
+  private final ReviewRepository reviewRepository;
 
   @Override
   public Long register(MovieDTO movieDTO) {
@@ -48,10 +52,13 @@ public class MovieServiceImpl implements MovieService {
   public PageResultDTO<MovieDTO, Object[]> getList(PageRequestDTO pageRequestDTO) {
     Pageable pageable = pageRequestDTO.getPageable(Sort.by("mno").descending());
     // Page<Movie> result = movieRepository.findAll(pageable);
-    Page<Object[]> result = movieRepository.getListPageImg(pageable);
+//    Page<Object[]> result = movieRepository.getListPageImg(pageable);
+    Page<Object[]> result = movieRepository.searchPage(pageRequestDTO.getType(),
+        pageRequestDTO.getKeyword(),
+        pageable);
     Function<Object[], MovieDTO> fn = objects -> entityToDto(
         (Movie) objects[0],
-        (List<MovieImage>) (Arrays.asList((MovieImage) objects[1])),
+        (List<MovieImage>) (Arrays.asList((MovieImage)objects[1])),
         (Double) objects[2],
         (Long) objects[3]
     );
@@ -66,6 +73,39 @@ public class MovieServiceImpl implements MovieService {
     result.forEach(objects -> movieImages.add((MovieImage) objects[1]));
     Double avg = (Double) result.get(0)[2];
     Long reviewCnt = (Long) result.get(0)[3];
+
     return entityToDto(movie, movieImages, avg, reviewCnt);
+  }
+  @Override
+  public void modify(MovieDTO dto) {
+    Optional<Movie> result = movieRepository.findById(dto.getMno());
+    if (result.isPresent()) {
+      Movie movie = result.get();
+      movie.changeTitle(dto.getTitle());
+      movieRepository.save(movie);
+    }
+  }
+
+  @Transactional
+  @Override
+  public List<String> removeWithReviewsAndMovieImages(Long mno) {
+    List<MovieImage> list = movieImageRepository.findByMno(mno);
+    List<String> result = new ArrayList<>();
+    list.forEach(new Consumer<MovieImage>() {
+      @Override
+      public void accept(MovieImage t) {
+        result.add(t.getPath() + File.separator + t.getUuid() + "_" + t.getImgName());
+      }
+    });
+    movieImageRepository.deleteByMno(mno);
+    reviewRepository.deleteByMno(mno);
+    movieRepository.deleteById(mno);
+    return result;
+  }
+
+  @Override
+  public void removeUuid(String uuid) {
+    log.info("deleteImage...... uuid: " + uuid);
+    movieImageRepository.deleteByUuid(uuid);
   }
 }

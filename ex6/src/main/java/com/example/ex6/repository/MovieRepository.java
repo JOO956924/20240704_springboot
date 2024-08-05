@@ -1,6 +1,7 @@
 package com.example.ex6.repository;
 
 import com.example.ex6.entity.Movie;
+import com.example.ex6.repository.search.SearchRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface MovieRepository extends JpaRepository<Movie, Long> {
+public interface MovieRepository extends JpaRepository<Movie, Long>, SearchRepository {
 
 //  select m.mno, avg(coalesce(r.grade,0)), count(r.reviewnum)
 //  from movie m left outer join review r on m.mno = r.movie_mno
