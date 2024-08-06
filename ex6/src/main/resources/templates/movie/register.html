@@ -120,11 +120,11 @@
         e.preventDefault();
         const title = document.getElementById("title")
         if(title.value == "") {title.focus();return false;}
-        if(fileInput.files.length == 0) {
+        /*if(fileInput.files.length == 0) {
           document.querySelector("#custom-label").innerHTML =
             "파일을 선택하세요!"
           fileInput.focus(); return false;
-        }
+        }*/
         let str = "";
         const liArr = document.querySelectorAll(".uploadResult ul li");
         for(let i=0;i<liArr.length;i++){

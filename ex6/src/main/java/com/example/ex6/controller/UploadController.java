@@ -66,6 +66,7 @@ public class UploadController {
     }
     return new ResponseEntity<>(resultDTOList, HttpStatus.OK);
   }
+
   @GetMapping("/display")
   public ResponseEntity<byte[]> getImageFile(String fileName, String size) {
     ResponseEntity<byte[]> result = null;
@@ -73,7 +74,7 @@ public class UploadController {
       String searchFilename = URLDecoder.decode(fileName, "UTF-8");
       File file = new File(uploadPath + File.separator + searchFilename);
       if (size != null && size.equals("1")) {
-        log.info(">>",file.getName());
+        log.info(">>", file.getName());
         // 미리보기 할 때 링크에 size=1로 설정하여 섬네일명에서 s_ 를 제거하고 가져옴
         file = new File(file.getParent(), file.getName().substring(2));
       }
@@ -93,7 +94,7 @@ public class UploadController {
   @Transactional
   @PostMapping("/removeFile")
   public ResponseEntity<Boolean> removeFile(String fileName, String uuid) {
-    log.info("remove fileName: "+fileName);
+    log.info("remove fileName: " + fileName);
     String searchFilename = null;
     if (uuid != null) {
       movieImageRepository.deleteByUuid(uuid);
@@ -118,7 +119,7 @@ public class UploadController {
     String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
     String folderPath = str.replace("/", File.separator);
     File uploadPathFolder = new File(uploadPath, folderPath);
-    if(!uploadPathFolder.exists()) uploadPathFolder.mkdirs();
+    if (!uploadPathFolder.exists()) uploadPathFolder.mkdirs();
     return folderPath;
   }
 }

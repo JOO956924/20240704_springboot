@@ -6,7 +6,10 @@ import com.example.ex6.dto.PageRequestDTO;
 import com.example.ex6.dto.PageResultDTO;
 import com.example.ex6.entity.Movie;
 import com.example.ex6.entity.MovieImage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +23,7 @@ public interface MovieService {
 
   MovieDTO getMovie(Long mno);
 
-  void modify(MovieDTO dto);
+  void modify(MovieDTO movieDTO);
 
   List<String> removeWithReviewsAndMovieImages(Long mno);
 
@@ -60,8 +63,9 @@ public interface MovieService {
         .regDate(movie.getRegDate())
         .modDate(movie.getModDate())
         .build();
-    if (movieImageList.size()!=0) {
-      List<MovieImageDTO> movieImageDTOList = movieImageList.stream().map(
+    List<MovieImageDTO> movieImageDTOList = new ArrayList<>();
+    if(movieImageList.toArray().length > 0 && movieImageList.toArray()[0] != null) {
+      movieImageDTOList = movieImageList.stream().map(
           movieImage -> {
             MovieImageDTO movieImageDTO = MovieImageDTO.builder()
                 .imgName(movieImage.getImgName())
@@ -77,5 +81,4 @@ public interface MovieService {
     movieDTO.setReviewCnt(reviewCnt);
     return movieDTO;
   }
-
 }

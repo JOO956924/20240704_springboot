@@ -27,6 +27,7 @@ public class ReviewServiceImpl implements ReviewService {
 
   @Override
   public Long register(ReviewDTO reviewDTO) {
+    log.info("reviewDTO >> ",reviewDTO);
     Review review = dtoToEntity(reviewDTO);
     reviewRepository.save(review);
     return review.getReviewnum();

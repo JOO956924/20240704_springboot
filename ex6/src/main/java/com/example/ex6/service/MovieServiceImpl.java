@@ -14,12 +14,16 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -39,12 +43,14 @@ public class MovieServiceImpl implements MovieService {
     List<MovieImage> movieImageList =
         (List<MovieImage>) entityMap.get("movieImageList");
     movieRepository.save(movie);
-    movieImageList.forEach(new Consumer<MovieImage>() {
-      @Override
-      public void accept(MovieImage movieImage) {
-        movieImageRepository.save(movieImage);
-      }
-    });
+    if(movieImageList != null) {
+      movieImageList.forEach(new Consumer<MovieImage>() {
+        @Override
+        public void accept(MovieImage movieImage) {
+          movieImageRepository.save(movieImage);
+        }
+      });
+    }
     return movie.getMno();
   }
 
@@ -76,13 +82,54 @@ public class MovieServiceImpl implements MovieService {
 
     return entityToDto(movie, movieImages, avg, reviewCnt);
   }
+
+  @Value("${com.example.upload.path}")
+  private String uploadPath;
+
+  @Transactional
   @Override
-  public void modify(MovieDTO dto) {
-    Optional<Movie> result = movieRepository.findById(dto.getMno());
+  public void modify(MovieDTO movieDTO) {
+    Optional<Movie> result = movieRepository.findById(movieDTO.getMno());
     if (result.isPresent()) {
-      Movie movie = result.get();
-      movie.changeTitle(dto.getTitle());
+      Map<String, Object> entityMap = dtoToEntity(movieDTO);
+      Movie movie = (Movie) entityMap.get("movie");
+      movie.changeTitle(movieDTO.getTitle());
       movieRepository.save(movie);
+
+      List<MovieImage> movieImageList =
+          (List<MovieImage>) entityMap.get("movieImageList");
+      if(movieImageList != null) {
+        List<MovieImage> oldMovieImageList =
+            movieImageRepository.findByMno(movie.getMno());
+        movieImageList.forEach(movieImage -> {
+          boolean result1 = false;
+          for (int i = 0; i < oldMovieImageList.size(); i++) {
+            result1 = oldMovieImageList.get(i).getUuid().equals(movieImage.getUuid());
+            if(result1) break;
+          }
+          if(!result1) movieImageRepository.save(movieImage);
+        });
+        oldMovieImageList.forEach(oldMovieImage -> {
+          boolean result1 = false;
+          for (int i = 0; i < movieImageList.size(); i++) {
+            result1 = movieImageList.get(i).getUuid().equals(oldMovieImage.getUuid());
+            if(result1) break;
+          }
+          if(!result1) movieImageRepository.deleteByUuid(oldMovieImage.getUuid());
+
+          // 실제 파일도 지우기
+          String searchFilename = null;
+          String fileName = oldMovieImage.getPath() + File.separator + oldMovieImage.getUuid() + "_" + oldMovieImage.getImgName();
+          try {
+            searchFilename = URLDecoder.decode(fileName, "UTF-8");
+            File file = new File(uploadPath + File.separator + searchFilename);
+            file.delete();
+            new File(file.getParent(), "s_" + file.getName()).delete();
+          } catch (Exception e) {
+            log.error(e.getMessage());
+          }
+        });
+      }
     }
   }
 

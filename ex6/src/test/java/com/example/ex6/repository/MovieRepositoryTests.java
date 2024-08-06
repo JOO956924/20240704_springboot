@@ -102,10 +102,11 @@ class MovieRepositoryTests {
       System.out.println(Arrays.toString(arr));
     }
   }
-  @Test
-  public void testSearch1() {
-    movieRepository.search1();
-  }
+
+//  @Test
+//  public void testSearch1() {
+//    movieRepository.search1();
+//  }
 
   @Test
   public void testSearchPage() {

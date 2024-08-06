@@ -1,5 +1,4 @@
 package com.example.ex6.repository.search;
-
 import com.example.ex6.entity.Movie;
 import com.example.ex6.entity.QMovie;
 import com.example.ex6.entity.QMovieImage;
@@ -66,7 +65,7 @@ public class SearchRepositoryImpl extends QuerydslRepositorySupport
     jpqlQuery.leftJoin(review).on(review.movie.eq(movie));
 
     //3) Tuple생성 : 조인을 한 결과의 데이터를 tuple로 생성
-    JPQLQuery<Tuple> tuple = jpqlQuery.select(movie, movieImage, review.grade.avg().coalesce(0.0), review.count());
+    JPQLQuery<Tuple> tuple = jpqlQuery.select(movie, movieImage, review.grade.avg().coalesce(0.0),review.count());
 
     //4) 조건절 생성
     BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -80,14 +79,11 @@ public class SearchRepositoryImpl extends QuerydslRepositorySupport
       for (String t : typeArr) {
         switch (t) {
           case "t":
-            conditionBuilder.or(movie.title.contains(keyword));
-            break;
+            conditionBuilder.or(movie.title.contains(keyword)); break;
           case "w":
-            conditionBuilder.or(review.member.email.contains(keyword));
-            break;
+            conditionBuilder.or(review.member.email.contains(keyword)); break;
           case "c":
-            conditionBuilder.or(review.text.contains(keyword));
-            break;
+            conditionBuilder.or(review.text.contains(keyword)); break;
         }
       }
       booleanBuilder.and(conditionBuilder);
