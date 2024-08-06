@@ -7,6 +7,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -14,8 +16,14 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
   private static final String[] AUTH_WHITELIST = {
-      "/"
+      "/", "/sample/all"
   };
+
+  @Bean
+  PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
   /* SecurityFilterChain Bean 열할 :
   세션 인증 기반 방식으로 대부분의 Spring Security에 대한 설정으로 다룰 수 있다. */
   @Bean
@@ -28,10 +36,12 @@ public class SecurityConfig {
     httpSecurity.authorizeHttpRequests(
         auth -> auth.requestMatchers(AUTH_WHITELIST).permitAll()
             .anyRequest().authenticated());
+
+    // formLogin()을 설정만 해도 자동생성된 로그인페이지로 이동가능.
     httpSecurity.formLogin(new Customizer<FormLoginConfigurer<HttpSecurity>>() {
       @Override
       public void customize(FormLoginConfigurer<HttpSecurity> httpSecurityFormLoginConfigurer) {
-        
+
       }
     });
 
