@@ -95,13 +95,22 @@ public class MovieServiceImpl implements MovieService {
       Movie movie = (Movie) entityMap.get("movie");
       movie.changeTitle(movieDTO.getTitle());
       movieRepository.save(movie);
-
-      List<MovieImage> movieImageList =
+      // movieImageList :: 수정창에서 이미지 수정할 게 있는 경우의 목록
+      List<MovieImage> newMovieImageList =
           (List<MovieImage>) entityMap.get("movieImageList");
-      if(movieImageList != null) {
-        List<MovieImage> oldMovieImageList =
-            movieImageRepository.findByMno(movie.getMno());
-        movieImageList.forEach(movieImage -> {
+      List<MovieImage> oldMovieImageList =
+          movieImageRepository.findByMno(movie.getMno());
+      if(newMovieImageList == null) {
+        // 수정창에서 이미지 모두를 지웠을 때
+        movieImageRepository.deleteByMno(movie.getMno());
+        for (int i = 0; i < oldMovieImageList.size(); i++) {
+          MovieImage oldMovieImage = oldMovieImageList.get(i);
+          String fileName = oldMovieImage.getPath() + File.separator
+              + oldMovieImage.getUuid() + "_" + oldMovieImage.getImgName();
+          deleteFile(fileName);
+        }
+      } else { // newMovieImageList에 일부 변화 발생
+        newMovieImageList.forEach(movieImage -> {
           boolean result1 = false;
           for (int i = 0; i < oldMovieImageList.size(); i++) {
             result1 = oldMovieImageList.get(i).getUuid().equals(movieImage.getUuid());
@@ -111,25 +120,31 @@ public class MovieServiceImpl implements MovieService {
         });
         oldMovieImageList.forEach(oldMovieImage -> {
           boolean result1 = false;
-          for (int i = 0; i < movieImageList.size(); i++) {
-            result1 = movieImageList.get(i).getUuid().equals(oldMovieImage.getUuid());
+          for (int i = 0; i < newMovieImageList.size(); i++) {
+            result1 = newMovieImageList.get(i).getUuid().equals(oldMovieImage.getUuid());
             if(result1) break;
           }
-          if(!result1) movieImageRepository.deleteByUuid(oldMovieImage.getUuid());
-
-          // 실제 파일도 지우기
-          String searchFilename = null;
-          String fileName = oldMovieImage.getPath() + File.separator + oldMovieImage.getUuid() + "_" + oldMovieImage.getImgName();
-          try {
-            searchFilename = URLDecoder.decode(fileName, "UTF-8");
-            File file = new File(uploadPath + File.separator + searchFilename);
-            file.delete();
-            new File(file.getParent(), "s_" + file.getName()).delete();
-          } catch (Exception e) {
-            log.error(e.getMessage());
+          if(!result1) {
+            movieImageRepository.deleteByUuid(oldMovieImage.getUuid());
+            String fileName = oldMovieImage.getPath() + File.separator
+                + oldMovieImage.getUuid() + "_" + oldMovieImage.getImgName();
+            deleteFile(fileName);
           }
         });
       }
+    }
+  }
+
+  private void deleteFile(String fileName) {
+    // 실제 파일도 지우기
+    String searchFilename = null;
+    try {
+      searchFilename = URLDecoder.decode(fileName, "UTF-8");
+      File file = new File(uploadPath + File.separator + searchFilename);
+      file.delete();
+      new File(file.getParent(), "s_" + file.getName()).delete();
+    } catch (Exception e) {
+      log.error(e.getMessage());
     }
   }
 
