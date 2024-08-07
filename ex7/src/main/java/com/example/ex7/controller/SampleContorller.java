@@ -19,5 +19,6 @@ public class SampleContorller {
   @GetMapping("/admin")
   public void exAdmin() {log.info("/admin");} // 로그인 사용자중 관리자만 접근
 
-
+  @GetMapping("/logout")
+  public void exlogout() {log.info("/logout");} // 로그아웃
 }

@@ -1,11 +1,19 @@
 package com.example.ex7.config;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,9 +22,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +39,7 @@ public class SecurityConfig {
   private static final String[] AUTH_WHITElIST = {
       "/", "/sample/all"
   };
+
 
   @Bean
   PasswordEncoder passwordEncoder() {
@@ -36,6 +51,10 @@ public class SecurityConfig {
   @Bean
   protected SecurityFilterChain config(HttpSecurity httpSecurity)
       throws Exception {
+    // csrf 사용안하는 설정
+    httpSecurity.csrf(httpSecurityCsrfConfigurer -> {
+      httpSecurityCsrfConfigurer.disable();
+    });
 
     // authorizeHttpRequests :: 선별적으로 접속을 제한하는 메서드
     // 모든 페이지가 인증을 받도록 되어 있는 상태
@@ -53,7 +72,53 @@ public class SecurityConfig {
     httpSecurity.formLogin(new Customizer<FormLoginConfigurer<HttpSecurity>>() {
       @Override
       public void customize(FormLoginConfigurer<HttpSecurity> httpSecurityFormLoginConfigurer) {
-
+        httpSecurityFormLoginConfigurer
+//            .loginPage("/sample/login")
+//            .loginProcessingUrl("/sample/login")
+//            .defaultSuccessUrl("/")
+            .successHandler(new AuthenticationSuccessHandler() {
+              @Override
+              public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                UserDetails principal = (UserDetails) authentication.getPrincipal();
+                Collection<GrantedAuthority> authors =
+                    (Collection<GrantedAuthority>) principal.getAuthorities();
+                List<String> result = authors.stream().map(new Function<GrantedAuthority, String>() {
+                  @Override
+                  public String apply(GrantedAuthority grantedAuthority) {
+                    return grantedAuthority.getAuthority();
+                  }
+                }).collect(Collectors.toList());
+                System.out.println(">>" + result.toString());
+                for (int i = 0; i < result.size(); i++) {
+                  if (result.get(i).equals("ROLE_ADMIN")) {
+                    response.sendRedirect(request.getContextPath() + "/sample/admin");
+                  } else if (result.get(i).equals("ROLE_MEMBER")) {
+                    response.sendRedirect(request.getContextPath() + "/sample/member");
+                  } else {
+                    response.sendRedirect(request.getContextPath() + "/sample/all");
+                  }
+                  break;
+                }
+              }
+            });
+      }
+    });
+    // logout()은 정의 안해도 로그아웃 페이지 사용 가능. 사용자 로그아웃 페이지 지정할 때 사용
+    httpSecurity.logout(new Customizer<LogoutConfigurer<HttpSecurity>>() {
+      @Override
+      public void customize(LogoutConfigurer<HttpSecurity> httpSecurityLogoutConfigurer) {
+        httpSecurityLogoutConfigurer
+            // 커스텀 로그아웃 페이지 설정할 경우 post의 action주소 또한 같이 적용해야 함.
+            // logoutUrl()으로 인해 기존의 logout 주소는 이동은 가능하나 기능은 사용 안됨.
+            .logoutUrl("/sample/logout")
+            .logoutSuccessUrl("/") // 로그아웃 후에 돌아갈 페이지 설정
+            .logoutSuccessHandler(new LogoutSuccessHandler() {
+              @Override
+              public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                // logout 후에 개별적으로 여러가지 상황에 대하여 상황 적용가능한 설정
+              }
+            })
+            .invalidateHttpSession(true); // 서버의 세선을 무효화, false도 클라이언트를 무효화
       }
     });
 
@@ -77,10 +142,12 @@ public class SecurityConfig {
     UserDetails admin = User.builder()
         .username("admin")
         .password(passwordEncoder().encode("1"))
-        .roles("ADMIN","MEMBER")
+        .roles("ADMIN", "MEMBER")
         .build();
     List<UserDetails> list = new ArrayList<>();
-    list.add(user1);list.add(member);list.add(admin);
+    list.add(user1);
+    list.add(member);
+    list.add(admin);
     return new InMemoryUserDetailsManager(list);
   }
 
