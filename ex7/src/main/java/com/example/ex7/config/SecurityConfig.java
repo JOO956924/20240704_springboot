@@ -127,7 +127,7 @@ public class SecurityConfig {
   }
 
   // InMemory 방식으로 계정 관리
-  @Bean
+  /*@Bean
   public UserDetailsService userDetailsService() {
     UserDetails user1 = User.builder()
         .username("user1")
@@ -149,6 +149,6 @@ public class SecurityConfig {
     list.add(member);
     list.add(admin);
     return new InMemoryUserDetailsManager(list);
-  }
+  }*/
 
 }
