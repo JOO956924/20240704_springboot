@@ -8,21 +8,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @Log4j2
 @RequestMapping("/sample")
-public class SampleController {
+public class SampleContorller {
 
   @GetMapping("/all")
-  // 모든 이 접근
-  public void exAll() {
-    log.info("/all");
-  }
-  @GetMapping("/Member")
-  // 로그인 사용자 접근
-  public void exMember() {
-    log.info("/Member");
-  }
+  public void exAll() {log.info("/all");} //모든 이 접근
+
+  @GetMapping("/member")
+  public void exMember() {log.info("/member");} // 로그인 사용자 접근
+
   @GetMapping("/admin")
-  // 로그인 사용자중 관리자만 발급
-  public void admin() {
-    log.info("/admin");
-  }
+  public void exAdmin() {log.info("/admin");} // 로그인 사용자중 관리자만 접근
+
+
 }

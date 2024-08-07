@@ -7,7 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @SpringBootTest
 class SecurityConfigTests {
 
@@ -18,7 +17,7 @@ class SecurityConfigTests {
   public void testEncode() {
     String pass = "1";
     String enPw = passwordEncoder.encode(pass);
-    System.out.println("enPw:" + enPw);
+    System.out.println("enPw: " + enPw);
 //    assertEquals(pass, passwordEncoder.encode(enPw));
     System.out.println(passwordEncoder.matches(pass, enPw));
   }
