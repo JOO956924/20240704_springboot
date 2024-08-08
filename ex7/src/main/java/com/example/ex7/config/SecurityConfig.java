@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -40,7 +41,6 @@ public class SecurityConfig {
       "/", "/sample/all"
   };
 
-
   @Bean
   PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
@@ -62,13 +62,13 @@ public class SecurityConfig {
     httpSecurity.authorizeHttpRequests(
         auth -> auth.requestMatchers(AUTH_WHITElIST).permitAll()
             .requestMatchers("/sample/admin/**").hasRole("ADMIN")
-            .requestMatchers("/sample/member/**").access(
+            .requestMatchers("/sample/manager/**").access(
                 new WebExpressionAuthorizationManager(
-                    "hasRole('ADMIN') or hasRole('MEMBER')")
+                    "hasRole('ADMIN') or hasRole('MANAGER')")
             )
             .anyRequest().authenticated());
 
-    // formLogin()를 정의만 해도 자동생성된 로그인페이지로 이동가능.
+    // formLogin()를 정의해야만 해도 자동생성된 로그인페이지로 이동가능.
     httpSecurity.formLogin(new Customizer<FormLoginConfigurer<HttpSecurity>>() {
       @Override
       public void customize(FormLoginConfigurer<HttpSecurity> httpSecurityFormLoginConfigurer) {
@@ -92,8 +92,8 @@ public class SecurityConfig {
                 for (int i = 0; i < result.size(); i++) {
                   if (result.get(i).equals("ROLE_ADMIN")) {
                     response.sendRedirect(request.getContextPath() + "/sample/admin");
-                  } else if (result.get(i).equals("ROLE_MEMBER")) {
-                    response.sendRedirect(request.getContextPath() + "/sample/member");
+                  } else if (result.get(i).equals("ROLE_MANAGER")) {
+                    response.sendRedirect(request.getContextPath() + "/sample/manager");
                   } else {
                     response.sendRedirect(request.getContextPath() + "/sample/all");
                   }
@@ -103,52 +103,54 @@ public class SecurityConfig {
             });
       }
     });
-    // logout()은 정의 안해도 로그아웃 페이지 사용 가능. 사용자 로그아웃 페이지 지정할 때 사용
+    // logout() 정의 안해도 로그아웃 페이지 사용 가능. 사용자 로그아웃 페이지 지정할 때사용
     httpSecurity.logout(new Customizer<LogoutConfigurer<HttpSecurity>>() {
       @Override
       public void customize(LogoutConfigurer<HttpSecurity> httpSecurityLogoutConfigurer) {
         httpSecurityLogoutConfigurer
-            // 커스텀 로그아웃 페이지 설정할 경우 post의 action주소 또한 같이 적용해야 함.
-            // logoutUrl()으로 인해 기존의 logout 주소는 이동은 가능하나 기능은 사용 안됨.
-            .logoutUrl("/sample/logout")
+            // logoutUrl() 설정할 경우 html action 주소 또한 같이 적용해야 함.
+            // logoutUrl()으로 인해 기존 logout 주소 이동은 가능하나 기능은 사용 안됨.
+            .logoutUrl("/logout")
             .logoutSuccessUrl("/") // 로그아웃 후에 돌아갈 페이지 설정
-            .logoutSuccessHandler(new LogoutSuccessHandler() {
-              @Override
-              public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                // logout 후에 개별적으로 여러가지 상황에 대하여 상황 적용가능한 설정
-              }
-            })
-            .invalidateHttpSession(true); // 서버의 세선을 무효화, false도 클라이언트를 무효화
+            //.logoutSuccessHandler((request, response, authentication) -> {
+            // logout 후에 개별적으로 여러가지 상황에 대하여 적용 가능한 설정
+            //})
+            .invalidateHttpSession(true); // 서버 세션을 무효화, false도 클라이언트측 무효화
       }
     });
-
-
+    httpSecurity.oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer.successHandler(new AuthenticationSuccessHandler() {
+      @Override
+      public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+//        response.sendRedirect(request.getContextPath()+"/sample/all");
+      }
+    }));
     return httpSecurity.build();
   }
 
-  // InMemory 방식으로 계정 관리
+  // InMemory 방식으로 UserDetailsService(인증 관리 객체) 사용
   /*@Bean
   public UserDetailsService userDetailsService() {
     UserDetails user1 = User.builder()
         .username("user1")
-        .password("$2a$10$9G92Uj6fazBFRrpYxY0.fO6d0U7H/wxqxAvh2w2Wu.Bk5pvgpT33q")
+        .password("$2a$10$XGw3jOo9mQSoij4/so.6H.BtSRWpgPze6ZWMuc7ntyFFWqVNbcmBe")
         .roles("USER")
         .build();
-    UserDetails member = User.builder()
-        .username("member")
-        .password("$2a$10$ge.irY0lMJXguMEss3bFfetwh/YLdjSHpZMWW1qnbemeUvsnaZHPW")
-        .roles("MEMBER")
+    UserDetails manager = User.builder()
+        .username("manager")
+        .password("$2a$10$AEHcuzENZx7OLeA.s8e.t.CvhE/a/GZf.ZKTPEBIKLv8g03zChnD2")
+        .roles("MANAGER")
         .build();
     UserDetails admin = User.builder()
         .username("admin")
         .password(passwordEncoder().encode("1"))
-        .roles("ADMIN", "MEMBER")
+        .roles("ADMIN", "MANAGER")
         .build();
     List<UserDetails> list = new ArrayList<>();
     list.add(user1);
-    list.add(member);
+    list.add(manager);
     list.add(admin);
     return new InMemoryUserDetailsManager(list);
+
   }*/
 
 }

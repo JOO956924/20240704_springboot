@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
+import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,14 +25,14 @@ class ClubMemberRepositoryTests {
   public void insertDummies() {
     IntStream.rangeClosed(1, 100).forEach(i -> {
       ClubMember clubMember = ClubMember.builder()
-          .email("user"+i+"@a.a")
+          .email("user" + i + "@a.a")
           .name("사용자"+i)
           .fromSocial(false)
           .password(passwordEncoder.encode("1"))
           .build();
       clubMember.addMemberRole(ClubMemberRole.USER);
-      if (i>80) clubMember.addMemberRole(ClubMemberRole.MANAGER);
-      if (i>90) clubMember.addMemberRole(ClubMemberRole.ADMIN);
+      if(i>80) clubMember.addMemberRole(ClubMemberRole.MANAGER);
+      if(i>90) clubMember.addMemberRole(ClubMemberRole.ADMIN);
       clubMemberRepository.save(clubMember);
     });
   }
