@@ -24,7 +24,7 @@ public class ClubUserDetailsService implements UserDetailsService {
   // DB에 있는 것 확인 된후,User를 상속받은 ClubMemberAuthDTO에 로그인정보를 담음=>세션
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     log.info("ClubMemberUser.........", username);
-    Optional<ClubMember> result = clubMemberRepository.findByEmail(username, false);
+    Optional<ClubMember> result = clubMemberRepository.findByEmail(username);
     if (!result.isPresent()) throw new UsernameNotFoundException("Check Email or Social");
     ClubMember clubMember = result.get();
     ClubMemberAuthDTO clubMemberAuthDTO = new ClubMemberAuthDTO(

@@ -113,7 +113,7 @@ public class SecurityConfig {
             .logoutUrl("/logout")
             .logoutSuccessUrl("/") // 로그아웃 후에 돌아갈 페이지 설정
             //.logoutSuccessHandler((request, response, authentication) -> {
-            // logout 후에 개별적으로 여러가지 상황에 대하여 적용 가능한 설정
+              // logout 후에 개별적으로 여러가지 상황에 대하여 적용 가능한 설정
             //})
             .invalidateHttpSession(true); // 서버 세션을 무효화, false도 클라이언트측 무효화
       }

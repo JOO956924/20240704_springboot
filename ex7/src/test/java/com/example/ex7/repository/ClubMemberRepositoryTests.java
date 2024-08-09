@@ -39,7 +39,7 @@ class ClubMemberRepositoryTests {
 
   @Test
   public void testRead() {
-    Optional<ClubMember> result = clubMemberRepository.findByEmail("user100@a.a", false);
+    Optional<ClubMember> result = clubMemberRepository.findByEmail("user100@a.a");
     if (result.isPresent()) System.out.println(result.get());
   }
 }

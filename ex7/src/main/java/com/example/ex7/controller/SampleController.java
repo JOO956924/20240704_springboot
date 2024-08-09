@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @Log4j2
 @RequestMapping("/sample")
-public class SampleContorller {
+public class SampleController {
 
   @GetMapping("/all")
   public void exAll() {log.info("/all");} //모든 이 접근
@@ -20,6 +20,7 @@ public class SampleContorller {
     log.info("/manager");
     log.info("clubMemberAuthDTO:", clubMemberAuthDTO);
   } // 로그인 사용자 접근
+
 
   @GetMapping("/admin")
   public void exAdmin() {log.info("/admin");} // 로그인 사용자중 관리자만 접근

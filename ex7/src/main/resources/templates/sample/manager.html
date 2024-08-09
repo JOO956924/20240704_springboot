@@ -12,11 +12,11 @@
 <div sec:authorize="hasRole('ADMIN')">Has USER_ADMIN</div>
 <br>
 <fieldset sec:authorize="isAuthenticated()">
-  <legend>Authenticated member can see this page.</legend>
+  <legend>Authenticated member can just see this page.</legend>
   <div>
     아래의 태그들은 로그인 되었을 때만 사용가능.<br>
-    Authenticated username : <span sec:authentication="name"></span> <br>
-    Authenticated user`s role : <span sec:authentication="principal.authorities"></span> <br>
+    Authenticated username : <span sec:authentication="name"></span><br>
+    Authenticated user's role : <span sec:authentication="principal.authorities"></span><br>
   </div>
 </fieldset>
 </body>
