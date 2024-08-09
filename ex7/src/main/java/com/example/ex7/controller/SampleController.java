@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SampleController {
 
   @GetMapping("/all")
-//  @PreAuthorize("hasRole('ADMIN')")
+//  @PreAuthorize("hasRole('ADMIN')") or ("hasRole('USER' , 'MANAGER')")
   @PreAuthorize("isAuthenticated")
   public void exAll() {log.info("/all");} //모든 이 접근
 
