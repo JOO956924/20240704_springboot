@@ -1,5 +1,6 @@
 package com.example.ex8.config;
 
+import com.example.ex8.security.filter.ApiCheckFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -8,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -23,12 +26,18 @@ public class SecurityConfig {
   }
 
   @Bean
+  public ApiCheckFilter apiCheckFilter() {
+    return new ApiCheckFilter(new String[]{"/notes/**"});
+  }
+
+  @Bean
   protected SecurityFilterChain config(HttpSecurity httpSecurity)
       throws Exception {
     // API 서버에서는 csrf 사용안함
     httpSecurity.csrf(httpSecurityCsrfConfigurer -> {
       httpSecurityCsrfConfigurer.disable();
     });
+
     httpSecurity.authorizeHttpRequests(
         auth -> auth
             .requestMatchers(new AntPathRequestMatcher("/notes/**")).permitAll()
@@ -36,15 +45,10 @@ public class SecurityConfig {
             .requestMatchers(new AntPathRequestMatcher("/error/**")).permitAll()
             .anyRequest().denyAll());
 
-//    httpSecurity.oauth2Login(new Customizer<OAuth2LoginConfigurer<HttpSecurity>>() {
-//      @Override
-//      public void customize(OAuth2LoginConfigurer<HttpSecurity> httpSecurityOAuth2LoginConfigurer) {
-//        httpSecurityOAuth2LoginConfigurer.successHandler(
-//            getAuthenticationSuccessHandler()
-//        );
-//      }
-//    });
-
+    // ApiCheckFilter의 필터링 순서를 앞쪽으로 조정
+    httpSecurity.addFilterBefore(
+        apiCheckFilter(),UsernamePasswordAuthenticationFilter.class);
+    // BasicAuthenticationFilter.class
     return httpSecurity.build();
   }
 
