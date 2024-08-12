@@ -17,7 +17,7 @@ public class Note extends BasicEntity{
   private String title;
   private String content;
   @ManyToOne(fetch = FetchType.LAZY)
-  private ClubMember write;
+  private ClubMember writer;
 
   public void changeTitle(String title) {
     this.title = title;
