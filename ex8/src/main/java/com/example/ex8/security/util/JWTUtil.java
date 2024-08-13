@@ -27,7 +27,7 @@ public class JWTUtil {
   public String validateAndExtract(String tokenStr) throws Exception {
     log.info("Jwts getClass; " +
         Jwts.parser().verifyWith(
-            Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
+                Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
             .build().parse(tokenStr));
     Claims claims = (Claims) Jwts.parser().verifyWith(Keys.hmacShaKeyFor(
         secretKey.getBytes(StandardCharsets.UTF_8))).build().parse(tokenStr).getPayload();
