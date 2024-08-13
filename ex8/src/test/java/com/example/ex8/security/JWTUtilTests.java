@@ -22,4 +22,12 @@ class JWTUtilTests {
     String token = jwtUtil.generateToken(email);
     System.out.println(token);
   }
+  @Test
+  public void testValidate() throws Exception {
+    String email = "user95@a.a";
+    String token = jwtUtil.generateToken(email);
+    Thread.sleep(3000);
+    String resultEmail = jwtUtil.validateAndExtract(token);
+    System.out.println(token);
+  }
 }

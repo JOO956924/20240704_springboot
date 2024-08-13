@@ -13,6 +13,8 @@ import java.util.Date;
 public class JWTUtil {
   private String secretKey = "1234567890abcdefghijklmnopqrstuvwxyz";
   private long expire = 60 * 24 * 30;
+
+  // JWT을 생성
   public String generateToken(String content) throws Exception {
     return Jwts.builder()
         .issuedAt(new Date())
@@ -21,7 +23,7 @@ public class JWTUtil {
         .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
         .compact();
   }
-
+  // JWT 검증 및 email축출
   public String validateAndExtract(String tokenStr) throws Exception {
     log.info("Jwts getClass; " +
         Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))

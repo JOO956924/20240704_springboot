@@ -1,5 +1,6 @@
 package com.example.ex8.security.filter;
 
+import com.example.ex8.security.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import net.minidev.json.JSONObject;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -22,10 +24,12 @@ public class ApiCheckFilter extends OncePerRequestFilter {
   private String[] pattern;
   // 요청되는 주소와 패턴의 주소를 비교해주는 객체
   private AntPathMatcher antPathMatcher;
+  private JWTUtil jwtUtil;
 
-  public ApiCheckFilter(String[] pattern) {
-    this.pattern = pattern;
+  public ApiCheckFilter(String[] pattern, JWTUtil jwtUtil) {
     antPathMatcher = new AntPathMatcher();
+    this.pattern = pattern;
+    this.jwtUtil = jwtUtil;
   }
 
   @Override
@@ -75,8 +79,15 @@ public class ApiCheckFilter extends OncePerRequestFilter {
 
   private boolean checkAuthHeader(HttpServletRequest request) {
     boolean checkResult = false;
-
-
+    String authHeader = request.getHeader("Authorization");
+    if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+      log.info("Authorization : " + authHeader);
+      try {
+        String eamil = jwtUtil.validateAndExtract(authHeader.substring(7));
+        log.info("validate result: " + eamil);
+        checkResult = eamil.length() > 0;
+      } catch (Exception e) {e.printStackTrace();}
+    }
     return checkResult;
   }
 }
