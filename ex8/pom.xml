@@ -36,6 +36,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
@@ -70,10 +74,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-client</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter-test</artifactId>
 			<version>3.0.3</version>
@@ -84,8 +84,6 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-
 
 		<!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa -->
 		<!-- The major version was updated from 2.x.x -> 3.x.x,
@@ -123,7 +121,6 @@
 			<artifactId>jjwt-api</artifactId>
 			<version>0.12.6</version>
 		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -131,7 +128,6 @@
 			<version>0.12.6</version>
 			<scope>runtime</scope>
 		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -139,7 +135,6 @@
 			<version>0.12.6</version>
 			<scope>runtime</scope>
 		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-gson -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -164,6 +159,7 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
 			<!-- querydsl setting :: com.mysema.maven -->
 			<plugin>
 				<groupId>com.mysema.maven</groupId>

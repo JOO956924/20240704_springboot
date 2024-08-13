@@ -16,7 +16,7 @@ import java.io.PrintWriter;
 
 @Log4j2
 public class ApiCheckFilter extends OncePerRequestFilter {
-  // ApiCheckFilter의 기능 2가지
+  //ApiCheckFilter의 기능 2가지
   //1) 요청된 주소와 패턴(허락된 rest주소)와 일치하는지 비교
   //2) 일치하면 주소에 토큰의 유무를 확인
 
@@ -40,11 +40,11 @@ public class ApiCheckFilter extends OncePerRequestFilter {
 
     log.info("request.getRequestURI()" + request.getRequestURI());
     log.info("request.getContextPath()" + request.getContextPath());
-
     boolean check = false;
     for (int i = 0; i < pattern.length; i++) {
-      log.info("REQUEST match >> " + request.getContextPath() + pattern[i] + "/" + request.getRequestURI());
-      // 요청된 주소와 패턴주소가 일치할 경우에 조정한다
+      log.info("REQUEST match: >> " + request.getContextPath() + pattern[i]
+          + "/" + request.getRequestURI());
+      // 요청된 주소와 패턴주소가 일치할 경우에 조정한다.
       if (antPathMatcher.match(request.getContextPath() + pattern[i],
           request.getRequestURI())) {
         check = true;
@@ -68,13 +68,13 @@ public class ApiCheckFilter extends OncePerRequestFilter {
         JSONObject jsonObject = new JSONObject();
         String message = "FAIL CHECK API TOKEN";
         jsonObject.put("code", "403");
-        jsonObject.put("messege", message);
+        jsonObject.put("message", message);
         PrintWriter printWriter = response.getWriter();
         printWriter.println(jsonObject);
         return;
       }
     }
-    filterChain.doFilter(request, response); // 요청주소와 패턴주소 불일치
+    filterChain.doFilter(request, response);// 요청주소와 패턴주소 불일치
   }
 
   private boolean checkAuthHeader(HttpServletRequest request) {
@@ -83,12 +83,11 @@ public class ApiCheckFilter extends OncePerRequestFilter {
     if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
       log.info("Authorization : " + authHeader);
       try {
-        String eamil = jwtUtil.validateAndExtract(authHeader.substring(7));
-        log.info("validate result: " + eamil);
-        checkResult = eamil.length() > 0;
+        String email = jwtUtil.validateAndExtract(authHeader.substring(7));
+        log.info("validate result: " + email);
+        checkResult = email.length() > 0;
       } catch (Exception e) {e.printStackTrace();}
     }
     return checkResult;
   }
 }
-

@@ -9,13 +9,14 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @ToString
-public class Note extends BasicEntity{
+public class Note extends BasicEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long num;
 
   private String title;
   private String content;
+
   @ManyToOne(fetch = FetchType.LAZY)
   private ClubMember writer;
 
@@ -26,4 +27,5 @@ public class Note extends BasicEntity{
   public void changeContent(String content) {
     this.content = content;
   }
+
 }

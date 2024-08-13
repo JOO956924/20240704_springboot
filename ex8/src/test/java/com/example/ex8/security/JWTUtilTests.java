@@ -13,7 +13,7 @@ class JWTUtilTests {
 
   @BeforeEach
   public void testBefore() {
-    System.out.println("test before......");
+    System.out.println("test before.....");
     jwtUtil = new JWTUtil();
   }
   @Test
@@ -28,6 +28,6 @@ class JWTUtilTests {
     String token = jwtUtil.generateToken(email);
     Thread.sleep(3000);
     String resultEmail = jwtUtil.validateAndExtract(token);
-    System.out.println(token);
+    System.out.println(resultEmail);
   }
 }

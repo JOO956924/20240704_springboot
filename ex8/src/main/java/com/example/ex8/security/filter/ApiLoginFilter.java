@@ -18,34 +18,36 @@ import java.io.IOException;
 public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
   private JWTUtil jwtUtil;
 
-  public ApiLoginFilter(String defaultFilterProcessUrl, JWTUtil jwtUtil) {
-    super(defaultFilterProcessUrl);
+  // 생성자와 메서드 재정의가 필수!
+  public ApiLoginFilter(String defaultFilterProcessesUrl, JWTUtil jwtUtil) {
+    super(defaultFilterProcessesUrl);
     this.jwtUtil = jwtUtil;
   }
 
   @Override
   public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-    log.info("attemptAuthentication....");
+    log.info("ApiLoginFilter ++++++++++++ attemptAuthentication ++++++++++");
     String email = request.getParameter("email");
-    String pass =  request.getParameter("pw");
+    String pw = request.getParameter("pw");
     UsernamePasswordAuthenticationToken authToken =
-        new UsernamePasswordAuthenticationToken(email, pass);
+        new UsernamePasswordAuthenticationToken(email, pw);
+    log.info("authToken: " + authToken);
     return getAuthenticationManager().authenticate(authToken);
   }
 
   @Override
-  protected void successfulAuthentication(
-      HttpServletRequest request, HttpServletResponse response,
-      FilterChain chain, Authentication authResult)
-      throws IOException, ServletException {
-    log.info("successfulAuthentication :: authResult " + authResult.getPrincipal());
-    String email =((ClubMemberAuthDTO) authResult.getPrincipal()).getEmail();
+  protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    log.info("ApiLoginFilter... successfulAuthentication: " + authResult);
+    log.info("authResult.getPrincipal(): " + authResult.getPrincipal());
+    String email = ((ClubMemberAuthDTO) (authResult.getPrincipal())).getUsername();
     String token = null;
     try {
       token = jwtUtil.generateToken(email);
       response.setContentType("text/plain");
       response.getOutputStream().write(token.getBytes());
-      log.info("generated token :" + token);
-    } catch (Exception e) {e.printStackTrace();}
+      log.info(token);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }
