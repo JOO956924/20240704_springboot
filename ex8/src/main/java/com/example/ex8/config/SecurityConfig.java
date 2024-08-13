@@ -45,10 +45,10 @@ public class SecurityConfig {
             .requestMatchers(new AntPathRequestMatcher("/error/**")).permitAll()
             .anyRequest().denyAll());
 
-    // ApiCheckFilter의 필터링 순서를 앞쪽으로 조정
+    // addFilterBefore는 일반적인 필터링 순서보다 앞쪽에서 필터링하도록 순서 조정
     httpSecurity.addFilterBefore(
         apiCheckFilter(),UsernamePasswordAuthenticationFilter.class);
-    // BasicAuthenticationFilter.class
+    // BasicAuthenticationFilter.class 도 사용가능
     return httpSecurity.build();
   }
 
