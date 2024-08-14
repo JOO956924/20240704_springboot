@@ -50,6 +50,6 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, SearchReposit
       "from Feed m left outer join Photos p on p.feed=f " +
       "left outer join Review r on r.feed = f " +
       "where f.fno = :fno group by p ")
-  List<Object[]> getMovieWithAll(Long mno); //특정 영화 조회
+  List<Object[]> getFeedWithAll(Long mno); //특정 영화 조회
 
 }

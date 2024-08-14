@@ -18,54 +18,54 @@
 </style>
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
   <th:block th:fragment="content">
-    <h1 class="mt-4">Movie Read Page</h1>
-    <form th:action="@{/movie/modify}" th:method="post" id="frmSend">
+    <h1 class="mt-4">Feed Read Page</h1>
+    <form th:action="@{/feed/modify}" th:method="post" id="frmSend">
       <div class="form-group">
-        <label for="mno">Mno</label>
-        <input type="text" name="mno" id="mno" class="form-control"
-               th:value="${movieDTO.mno}" readonly>
+        <label for="fno">Fno</label>
+        <input type="text" name="fno" id="fno" class="form-control"
+               th:value="${feedDTO.fno}" readonly>
       </div>
       <div class="form-group">
         <label for="title">Title</label>
         <input type="text" name="title" id="title" class="form-control"
-               th:value="${movieDTO.title}" readonly>
+               th:value="${feedDTO.title}" readonly>
       </div>
       <div class="form-group">
         <label for="reviewCnt">Review Count</label>
         <input type="text" name="reviewCnt" id="reviewCnt" class="form-control"
-               th:value="${movieDTO.reviewCnt}" readonly></input>
+               th:value="${feedDTO.reviewCnt}" readonly></input>
       </div>
       <div class="form-group">
         <label for="avg">Average</label>
         <input type="text" name="avg" id="avg" class="form-control"
-               th:value="${movieDTO.avg}" readonly></input>
+               th:value="${feedDTO.avg}" readonly></input>
       </div>
       <div class="form-group">
         <label for="regDate">RegDate</label>
         <input type="text" name="regDate" id="regDate" class="form-control" readonly
-               th:value="${#temporals.format(movieDTO.regDate, 'yyyy/MM/dd hh:mm')}">
+               th:value="${#temporals.format(feedDTO.regDate, 'yyyy/MM/dd hh:mm')}">
       </div>
       <div class="form-group">
         <label for="modDate">ModDate</label>
         <input type="text" name="modDate" id="modDate" class="form-control" readonly
-               th:value="${#temporals.format(movieDTO.modDate, 'yyyy/MM/dd hh:mm')}">
+               th:value="${#temporals.format(feedDTO.modDate, 'yyyy/MM/dd hh:mm')}">
       </div>
       <div class="uploadResult">
         <ul>
-          <li th:each="movieImageDTO : ${movieDTO.imageDTOList}"
-              th:data-file="${movieImageDTO.getThumbnailURL}" style="cursor:pointer;">
+          <li th:each="feedImageDTO : ${feedDTO.imageDTOList}"
+              th:data-file="${feedImageDTO.getThumbnailURL}" style="cursor:pointer;">
             <img
-                th:if="${movieImageDTO.path != null}"
-                th:src="|@{/display(fileName=${movieImageDTO.getThumbnailURL})}|">
+                th:if="${feedImageDTO.path != null}"
+                th:src="|@{/display(fileName=${feedImageDTO.getThumbnailURL})}|">
           </li>
         </ul>
       </div>
       <div class="form-group">
-        <a th:href="@{/movie/modify(mno=${movieDTO.mno},
+        <a th:href="@{/feed/modify(fno=${feedDTO.fno},
                       page=${pageRequestDTO.page},type=${pageRequestDTO.type},
                       keyword=${pageRequestDTO.keyword})}"
            class="btn btn-primary">Modify</a>
-        <a th:href="@{/movie/list(page=${pageRequestDTO.page},
+        <a th:href="@{/feed/list(page=${pageRequestDTO.page},
                       type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}"
            class="btn btn-info">List</a>
       </div>
@@ -75,7 +75,7 @@
         <h5>
           <span class="btn btn-outline-secondary addReview">Add Review</span>
           <span style="font-size:9pt">Review :
-            <span id="revCnt" th:text="${movieDTO.reviewCnt}"></span> 개
+            <span id="revCnt" th:text="${feedDTO.reviewCnt}"></span> 개
           </span>
         </h5>
       </div>
@@ -105,14 +105,14 @@
 
       // window.onload : document의 태그를 모두 읽고 난뒤 실행되는 함수
       window.onload = function(){
-        var mno = [[${movieDTO.mno}]]
+        var fno = [[${feedDTO.fno}]]
         loadReviewJSON();
         const uploadResultUlLis = document.querySelectorAll(".uploadResult ul li");
         for(let i=0;i<uploadResultUlLis.length;i++){
           uploadResultUlLis[i].onclick = function () {
             const url = /*[[@{/display}]]*/'url'
             const file = this.dataset.file;
-            document.querySelector("#exampleModalLabel").textContent = 'Movie Poster'
+            document.querySelector("#exampleModalLabel").textContent = 'Feed Poster'
             document.querySelector(".modal-body").innerHTML =
               `<img style="width:100%" src="${url}?fileName=${file}&size=1">`
             document.querySelector(".modal-footer").innerHTML =
@@ -127,7 +127,7 @@
         function loadReviewJSON() {
           const url = /*[[@{/reviews/}]]*/'url'
           const listGroup = document.querySelector(".reviewList")
-          fetch(url+mno+"/all", {method: 'GET',})
+          fetch(url+fno+"/all", {method: 'GET',})
           .then(response => response.json())
           .then(data => {
             // console.log(data)
@@ -137,7 +137,7 @@
               onmouseover="this.style.background='#d6e6ff'"
               onmouseout="this.style.background='white'"
               data-mid="${data[i].mid}" data-text="${data[i].text}"
-              data-grade="${data[i].grade}" data-nickname="${data[i].nickname}"
+              data-grade="${data[i].grade}" data-name="${data[i].name}"
               data-email="${data[i].email}" data-reviewnum="${data[i].reviewnum}"
               style="padding: 5px 20px;cursor:pointer;">
                 <div style="display:inline-block;width:68%;">
@@ -146,7 +146,7 @@
                   [★ ${data[i].grade}]</h5>
                 </div>
                 <div style="display:inline-block;width:30%;text-align: right;right-padding:12px;">
-                  <span class="card-subtitle text-muted" style="font-size:10px">${data[i].nickname} /
+                  <span class="card-subtitle text-muted" style="font-size:10px">${data[i].name} /
                    ${data[i].email}</span>
                   <span class="card-subtitle text-muted"
                   style="display:inline-block;width:150px;color:rgb(148 163 184);font-size:12px;"
@@ -163,7 +163,7 @@
                 let text = cardBody[i].dataset.text;
                 let mid = cardBody[i].dataset.mid;
                 let grade = cardBody[i].dataset.grade;
-                let nickname = cardBody[i].dataset.nickname;
+                let name = cardBody[i].dataset.name;
                 document.querySelector('#exampleModalLabel').textContent='No '+reviewnum
                 document.querySelector(".modal-body").innerHTML =
                   `<input type="hidden" name="reviewnum" value="${reviewnum}" readonly>
@@ -188,10 +188,10 @@
                   if(!text.value) {
                     text.setAttribute('placeholder','댓글입력하세요');text.focus();return;}
                   if(!grade) {notice.textContent='Select Grade!'; return;}
-                  let review = {mno: mno, text: text.value, mid: mid.value
+                  let review = {fno: fno, text: text.value, mid: mid.value
                                   , grade: grade, reviewnum: reviewnum.value}
                   const url = /*[[@{/reviews/}]]*/'url';
-                  fetch(url+mno+"/"+reviewnum.value, {
+                  fetch(url+fno+"/"+reviewnum.value, {
                     method: 'PUT',
                     headers: {'Content-type': 'application/json'},
                     body: JSON.stringify(review)
@@ -210,7 +210,7 @@
                   let reviewnum = document.querySelector(
                     ".modal-body input[name='reviewnum']")
                   const url = /*[[@{/reviews/}]]*/'url';
-                  fetch(url + mno + "/" + reviewnum.value, {
+                  fetch(url + fno + "/" + reviewnum.value, {
                     method: 'DELETE',
                     headers: {'Content-type': 'application/json'},
                   })
@@ -273,9 +273,9 @@
             if(!mid.value) {
               mid.setAttribute('placeholder','회원번호를 입력하세요');mid.focus();return;}
             if(!grade) {notice.textContent='Select Grade!'; return;}
-            let review = {mno: mno, text: text.value, mid: mid.value, grade: grade}
+            let review = {fno: fno, text: text.value, mid: mid.value, grade: grade}
             const url = /*[[@{/reviews/}]]*/'url';
-            fetch(url+mno, {
+            fetch(url+fno, {
               method: 'POST',
               headers: {'Content-type': 'application/json'},
               body: JSON.stringify(review)
