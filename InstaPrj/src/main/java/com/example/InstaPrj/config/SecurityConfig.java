@@ -39,7 +39,7 @@ public class SecurityConfig {
   }
 
   /* SecurityFilterChain Bean 역할 :
-  세션 인증 기반 방식으로 대부분의 Spring Security에 대한 설정으로 다룰 수 있다. */  
+  세션 인증 기반 방식으로 대부분의 Spring Security에 대한 설정으로 다룰 수 있다. */
   @Bean
   protected SecurityFilterChain config(HttpSecurity httpSecurity)
       throws Exception {
