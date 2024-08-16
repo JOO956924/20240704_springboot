@@ -1,8 +1,8 @@
-package com.example.InstaPrj.repository.search;
-import com.example.InstaPrj.entity.Feed;
-import com.example.InstaPrj.entity.QFeed;
-import com.example.InstaPrj.entity.QPhotos;
-import com.example.InstaPrj.entity.QReview;
+package com.example.ex9.repository.search;
+import com.example.ex9.entity.Feed;
+import com.example.ex9.entity.QFeed;
+import com.example.ex9.entity.QPhotos;
+import com.example.ex9.entity.QReview;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
@@ -81,7 +81,7 @@ public class SearchRepositoryImpl extends QuerydslRepositorySupport
           case "t":
             conditionBuilder.or(feed.title.contains(keyword)); break;
           case "w":
-            conditionBuilder.or(review.clubMember.email.contains(keyword)); break;
+            conditionBuilder.or(review.member.email.contains(keyword)); break;
           case "c":
             conditionBuilder.or(review.text.contains(keyword)); break;
         }

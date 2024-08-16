@@ -17,7 +17,6 @@ public class ClubMember extends BasicEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long cno;
 
-  @Column(nullable = false, unique = true)
   private String email;
 
   private String password;

@@ -1,12 +1,11 @@
-package com.example.InstaPrj.repository;
+package com.example.ex9.repository;
 
-import com.example.InstaPrj.entity.Feed;
-import com.example.InstaPrj.repository.search.SearchRepository;
+import com.example.ex9.entity.Feed;
+import com.example.ex9.repository.search.SearchRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

@@ -38,19 +38,15 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-  /* SecurityFilterChain Bean 역할 :
-  세션 인증 기반 방식으로 대부분의 Spring Security에 대한 설정으로 다룰 수 있다. */
+
   @Bean
   protected SecurityFilterChain config(HttpSecurity httpSecurity)
       throws Exception {
-    // csrf 사용안하는 설정
+
     httpSecurity.csrf(httpSecurityCsrfConfigurer -> {
       httpSecurityCsrfConfigurer.disable();
     });
 
-    // authorizeHttpRequests :: 선별적으로 접속을 제한하는 메서드
-    // 모든 페이지가 인증을 받도록 되어 있는 상태
-    // httpSecurity.authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
     httpSecurity.authorizeHttpRequests(
         auth -> auth
             .requestMatchers(AUTH_WHITElIST).permitAll()

@@ -1,7 +1,7 @@
-package com.example.InstaPrj.repository;
+package com.example.ex9.repository;
 
-import com.example.InstaPrj.entity.Feed;
-import com.example.InstaPrj.entity.Photos;
+import com.example.ex9.entity.Feed;
+import com.example.ex9.entity.Photos;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
