@@ -1,86 +1,91 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <style>
-  .form-group {margin-bottom: 10px;}
-  .uploadResult {width: 100%;background:gray;margin-top:10px;}
+  .form-group {margin-bottom: 15px;}
+  .uploadResult {background: #f8f9fa;margin-top: 20px;padding: 15px;border-radius: 10px;}
   .uploadResult ul {
-    display: flex;flex-flow:row;justify-content:center;
-    align-items:center;vertical-align:top;overflow: auto;
+    display: flex;flex-flow: row;justify-content: center;
+    align-items: center;vertical-align: top;overflow: auto;
   }
-  .uploadResult ul li {list-style:none;padding:10px;margin-left:2em;}
-  .uploadResult ul li img {width: 100px;}
+  .uploadResult ul li {list-style: none;padding: 10px;margin-left: 2em;}
+  .uploadResult ul li img {
+    width: 100%;height: auto;max-width: 600px;max-height: 700px;
+    object-fit: cover;border-radius: 10px;
+  }
 
-  .star {position: relative;font-size: 2rem;color: #ddd;}
-  .star input {width: 100%;height: 100%;position: absolute;left: 0;
-    opacity: 0;cursor: pointer;}
-  .star span {width: 0;position: absolute; left: 0;color: red;
-    overflow: hidden;pointer-events: none;}
+  /* 하트 아이콘 스타일 */
+  .heart {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+  }
+
+  .heart.active {
+    color: #e0245e; /* 인스타그램 좋아요 색상 */
+  }
 </style>
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
   <th:block th:fragment="content">
-    <h1 class="mt-4">Feed Read Page</h1>
-    <form th:action="@{/feed/modify}" th:method="post" id="frmSend">
-      <div class="form-group">
-        <label for="fno">Fno</label>
-        <input type="text" name="fno" id="fno" class="form-control"
-               th:value="${feedDTO.fno}" readonly>
+    <section class="py-5">
+      <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 align-items-center">
+          <!-- 이미지 섹션 -->
+          <div class="col-md-6">
+            <div class="uploadResult">
+              <ul>
+                <li th:each="feedImageDTO : ${feedDTO.imageDTOList}"
+                    th:data-file="${feedImageDTO.getThumbnailURL}" style="cursor:pointer;">
+                  <img th:if="${feedImageDTO.path != null}"
+                       th:src="|@{/display(fileName=${feedImageDTO.getThumbnailURL})}|">
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 정보 섹션 -->
+          <div class="col-md-6">
+            <div class="small mb-1">Fno: <span th:text="${feedDTO.fno}"></span></div>
+            <h1 class="display-5 fw-bolder" th:text="${feedDTO.title}">Feed Title</h1>
+            <div class="fs-5 mb-5">
+              <span th:text="${feedDTO.reviewCnt}"></span> Reviews
+            </div>
+            <div class="form-group">
+              <label for="regDate" class="form-label">RegDate</label>
+              <input type="text" name="regDate" id="regDate" class="form-control" readonly
+                     th:value="${#temporals.format(feedDTO.regDate, 'yyyy/MM/dd hh:mm')}">
+            </div>
+            <div class="form-group">
+              <label for="modDate" class="form-label">ModDate</label>
+              <input type="text" name="modDate" id="modDate" class="form-control" readonly
+                     th:value="${#temporals.format(feedDTO.modDate, 'yyyy/MM/dd hh:mm')}">
+            </div>
+            <div class="d-flex">
+              <a th:href="@{/feed/modify(fno=${feedDTO.fno},
+                        page=${pageRequestDTO.page},type=${pageRequestDTO.type},
+                        keyword=${pageRequestDTO.keyword})}"
+                 class="btn btn-primary flex-shrink-0">Modify</a>
+              <a th:href="@{/feed/list(page=${pageRequestDTO.page},
+                        type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}"
+                 class="btn btn-info flex-shrink-0 ms-2">List</a>
+            </div>
+            <div class="mt-5">
+              <h5>
+                <button class="btn btn-outline-secondary addReview">Add Review</button>
+                <span class="ms-3" style="font-size:9pt">Review :
+                  <span id="revCnt" th:text="${feedDTO.reviewCnt}"></span> 개
+                </span>
+              </h5>
+            </div>
+          </div>
+        </div>
+
+        <!-- 리뷰 섹션 -->
+        <div class="list-group reviewList mt-5" style="margin-bottom:50px;"></div>
       </div>
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input type="text" name="title" id="title" class="form-control"
-               th:value="${feedDTO.title}" readonly>
-      </div>
-      <div class="form-group">
-        <label for="reviewCnt">Review Count</label>
-        <input type="text" name="reviewCnt" id="reviewCnt" class="form-control"
-               th:value="${feedDTO.reviewCnt}" readonly></input>
-      </div>
-      <div class="form-group">
-        <label for="avg">Average</label>
-        <input type="text" name="avg" id="avg" class="form-control"
-               th:value="${feedDTO.avg}" readonly></input>
-      </div>
-      <div class="form-group">
-        <label for="regDate">RegDate</label>
-        <input type="text" name="regDate" id="regDate" class="form-control" readonly
-               th:value="${#temporals.format(feedDTO.regDate, 'yyyy/MM/dd hh:mm')}">
-      </div>
-      <div class="form-group">
-        <label for="modDate">ModDate</label>
-        <input type="text" name="modDate" id="modDate" class="form-control" readonly
-               th:value="${#temporals.format(feedDTO.modDate, 'yyyy/MM/dd hh:mm')}">
-      </div>
-      <div class="uploadResult">
-        <ul>
-          <li th:each="feedImageDTO : ${feedDTO.imageDTOList}"
-              th:data-file="${feedImageDTO.getThumbnailURL}" style="cursor:pointer;">
-            <img
-                th:if="${feedImageDTO.path != null}"
-                th:src="|@{/display(fileName=${feedImageDTO.getThumbnailURL})}|">
-          </li>
-        </ul>
-      </div>
-      <div class="form-group">
-        <a th:href="@{/feed/modify(fno=${feedDTO.fno},
-                      page=${pageRequestDTO.page},type=${pageRequestDTO.type},
-                      keyword=${pageRequestDTO.keyword})}"
-           class="btn btn-primary">Modify</a>
-        <a th:href="@{/feed/list(page=${pageRequestDTO.page},
-                      type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}"
-           class="btn btn-info">List</a>
-      </div>
-    </form>
-    <div>
-      <div class="mt-4">
-        <h5>
-          <span class="btn btn-outline-secondary addReview">Add Review</span>
-          <span style="font-size:9pt">Review :
-            <span id="revCnt" th:text="${feedDTO.reviewCnt}"></span> 개
-          </span>
-        </h5>
-      </div>
-      <div class="list-group reviewList" style="margin-bottom:50px;"></div>
-    </div>
+    </section>
+
+    <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -88,22 +93,20 @@
             <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-          </div>
+          <div class="modal-body"></div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
           </div>
         </div>
       </div>
     </div>
+
     <script th:inline="javascript">
-      // 별점 처리
-      function drawStar(target) {
-        document.querySelector('.star span').style.width = `${target.value * 10}%`;
+      // 좋아요 버튼 처리
+      function toggleHeart(heartElement) {
+        heartElement.classList.toggle('active');
       }
 
-      // window.onload : document의 태그를 모두 읽고 난뒤 실행되는 함수
       window.onload = function(){
         var fno = [[${feedDTO.fno}]]
         loadReviewJSON();
@@ -130,10 +133,9 @@
           fetch(url+fno+"/all", {method: 'GET',})
           .then(response => response.json())
           .then(data => {
-            // console.log(data)
             let str = "";
             for(let i=0;i<data.length;i++) {
-              str = str + `<div class="card-body form-control mb-1"
+              str += `<div class="card-body form-control mb-1"
               onmouseover="this.style.background='#d6e6ff'"
               onmouseout="this.style.background='white'"
               data-mid="${data[i].mid}" data-text="${data[i].text}"
@@ -143,7 +145,8 @@
                 <div style="display:inline-block;width:68%;">
                   <h6 style="display:inline-block;width:70px">${data[i].reviewnum}</h6>
                   <h5 class="card-text" style="display:inline-block;">${data[i].text}
-                  [★ ${data[i].grade}]</h5>
+                  <span class="heart" onclick="toggleHeart(this)">&#9829;</span>
+                  </h5>
                 </div>
                 <div style="display:inline-block;width:30%;text-align: right;right-padding:12px;">
                   <span class="card-subtitle text-muted" style="font-size:10px">${data[i].name} /
@@ -168,10 +171,9 @@
                 document.querySelector(".modal-body").innerHTML =
                   `<input type="hidden" name="reviewnum" value="${reviewnum}" readonly>
                    <input type="hidden" name="mid" value="${mid}" readonly>
-                   <label id="notice">Grade</label><span class="star">★★★★★<span>★★★★★</span>
-                   <input type="range" oninput="drawStar(this)" value="1" step="2" min="0" max="10">
-                   </span><br>
+                   <label id="notice">Review Text</label><br>
                    <input type="text" class="form-control" name="text" value="${text}">
+                   <span class="heart mt-3" onclick="toggleHeart(this)">&#9829;</span>
                   `
                 document.querySelector(".modal-footer").innerHTML =
                   `<button type="button" class="btn btn-danger remove">리뷰 삭제</button>
@@ -182,12 +184,10 @@
                   let reviewnum = document.querySelector(".modal-body input[name='reviewnum']")
                   let text = document.querySelector(".modal-body input[name='text']")
                   let mid = document.querySelector(".modal-body input[name='mid']")
-                  let grade = parseFloat(document.querySelector(".star span").style.width)*0.01*5;
-                  let notice = document.querySelector('#notice')
+                  let grade = document.querySelector('.heart').classList.contains('active') ? 1 : 0;
 
                   if(!text.value) {
                     text.setAttribute('placeholder','댓글입력하세요');text.focus();return;}
-                  if(!grade) {notice.textContent='Select Grade!'; return;}
                   let review = {fno: fno, text: text.value, mid: mid.value
                                   , grade: grade, reviewnum: reviewnum.value}
                   const url = /*[[@{/reviews/}]]*/'url';
@@ -226,7 +226,7 @@
                   })
                   .catch(err => console.log('myError', err))
                 }
-                document.querySelector('.star span').style.width = `${grade * 20}%`
+                document.querySelector('.heart').classList.toggle('active', grade === 1);
                 myModal.show()
               }
             }
@@ -251,10 +251,9 @@
           document.querySelector(".modal-body").innerHTML =
             `
             <input type="text" class="form-control" name="mid" placeholder="Member ID(mid)">
-            <label id="notice">Grade</label> <span class="star">★★★★★<span>★★★★★</span>
-                   <input type="range" oninput="drawStar(this)" value="1" step="2" min="0" max="10">
-                   </span><br>
+            <label id="notice">Review Text</label><br>
             <input type="text" class="form-control" name="text" placeholder="Review Text...">
+            <span class="heart mt-3" onclick="toggleHeart(this)">&#9829;</span>
             `
           document.querySelector(".modal-footer").innerHTML =
             `
@@ -265,14 +264,12 @@
           document.querySelector(".modal-footer .save").onclick = function () {
             let mid = document.querySelector(".modal-body input[name='mid']")
             let text = document.querySelector(".modal-body input[name='text']")
-            let grade = parseFloat(document.querySelector(".star span").style.width)*0.01*5;
-            let notice = document.querySelector('#notice')
+            let grade = document.querySelector('.heart').classList.contains('active') ? 1 : 0;
 
             if(!text.value) {
               text.setAttribute('placeholder','댓글입력하세요');text.focus();return;}
             if(!mid.value) {
               mid.setAttribute('placeholder','회원번호를 입력하세요');mid.focus();return;}
-            if(!grade) {notice.textContent='Select Grade!'; return;}
             let review = {fno: fno, text: text.value, mid: mid.value, grade: grade}
             const url = /*[[@{/reviews/}]]*/'url';
             fetch(url+fno, {
@@ -309,7 +306,5 @@
 
     </script>
   </th:block>
-
 </th:block>
-
 </html>

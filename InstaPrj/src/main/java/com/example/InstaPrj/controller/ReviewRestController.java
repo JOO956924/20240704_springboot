@@ -15,7 +15,7 @@ import java.util.List;
 @Log4j2
 @RequiredArgsConstructor
 @RequestMapping("/reviews")
-public class ReviewController {
+public class ReviewRestController {
   private final ReviewService reviewService;
 
   @GetMapping(value = "/{fno}/all", produces = MediaType.APPLICATION_JSON_VALUE)

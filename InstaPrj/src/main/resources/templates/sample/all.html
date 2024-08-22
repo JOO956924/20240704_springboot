@@ -1,29 +1,21 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Please sign in</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet"
+        integrity="sha384-oOE/3m0LUMPub4kaC09mrdEhIc+e3exm4xOGxAmuFXhBNF4hcg/6MiAXAf5p0P56" crossorigin="anonymous"/>
 </head>
 <body>
-<h1>For All</h1>
-<!-- 헤더에서 아래와 같이 사용 -->
-<sec:authorize access="isAnonymous()">로그인/회원가입</sec:authorize>
-<sec:authorize access="isAuthenticated()">로그아웃/회원정보보기</sec:authorize>
-<sec:authorize access="hasRole('admin')">관리자 페이지</sec:authorize>
-
-<div sec:authorize="hasRole('USER')">Has USER_ROLE</div>
-<div sec:authorize="hasRole('MANAGER')">Has USER_MANAGER</div>
-<div sec:authorize="hasRole('ADMIN')">Has USER_ADMIN</div>
-<fieldset sec:authorize="isAuthenticated()">
-  <legend>Authenticated member can just see this page.</legend>
-  <div>
-    아래의 태그들은 로그인 되었을 때만 사용가능.<br>
-    만약 fieldset 태그의 isAuthenticated 가 없이 사용한다면 에러발생.<br>
-    에러와 함께 로그인하는 페이지로 자동 연결됨.<br>
-    Authenticated username : <span sec:authentication="name"></span><br>
-    Authenticated user's role : <span sec:authentication="principal.authorities"></span><br>
-  </div>
-</fieldset>
+<div class="container">
+  <h1>환영합니다</h1>
+  <a class="btn btn-outline-primary" th:href="@{/feed/list}">게시글 보러가기</a>
+  <a class="btn btn-outline-primary" th:href="@{/sample/logout}">로그아웃</a>
+</div>
 </body>
 </html>
