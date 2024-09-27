@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @Log4j2
-@RequestMapping("/sample")
+@RequestMapping({"/sample","/feed"})
 public class SampleController {
 
   @GetMapping("/all")

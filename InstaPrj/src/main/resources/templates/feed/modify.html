@@ -2,79 +2,117 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
   <th:block th:fragment="content">
-    <h1 class="mt-4">Feed Modify Page</h1>
+
     <style>
-      .form-group {margin-bottom: 30px;}
-      .uploadResult {width: 100%;background:gray;margin-top:10px;}
-      .uploadResult ul {
-        display: flex;flex-flow:row;justify-content:center;
-        align-items:center;vertical-align:top;overflow: auto;
+      .form-group {margin-bottom: 20px;}
+      .uploadResult {
+        background: #f8f9fa;
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 10px;
       }
-      .uploadResult ul li {list-style:none;padding:10px;margin-left:2em;}
-      .uploadResult ul li img {width: 100px;}
+      .uploadResult ul {
+        display: flex;
+        flex-flow: row;
+        justify-content: center;
+        align-items: center;
+        overflow: auto;
+        padding: 0;
+      }
+      .uploadResult ul li {
+        list-style: none;
+        padding: 10px;
+        margin-left: 2em;
+        position: relative;
+      }
+      .uploadResult ul li img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+      .uploadResult ul li button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.7);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      .uploadResult ul li button:hover {
+        background: rgba(255, 0, 0, 0.7);
+        color: white;
+      }
+      .form-control[readonly] {
+        background-color: #e9ecef;
+        opacity: 1;
+      }
     </style>
-    <form th:action="@{/feed/modify}" th:method="post" id="frmSend">
-      <div class="form-group">
-        <label>Fno</label>
-        <input type="text" th:value="${feedDTO.fno}" name="fno" class="form-control" readonly>
+    <div class="col-md-6">
+      <div class="uploadResult">
+        <ul>
+          <li th:each="feedImageDTO : ${feedDTO.imageDTOList}"
+              th:data-path='${feedImageDTO.path}'
+              th:data-uuid='${feedImageDTO.uuid}'
+              th:data-file='${feedImageDTO.getImageURL}'
+              th:data-name='${feedImageDTO.imgName}'
+              style="cursor:pointer;">
+            <div>
+              <button type="button"
+                      th:onclick="deleteFileDb(this)">X
+              </button>
+              <img
+                  th:if="${feedImageDTO.path != null}"
+                  th:src="|@{/display(fileName=${feedImageDTO.getThumbnailURL})}|">
+            </div>
+          </li>
+        </ul>
       </div>
-      <div class="form-group">
-        <label>Title</label>
-        <input type="text" name="title" th:value="${feedDTO.title}" class="form-control">
-      </div>
-      <div style="margin-bottom: 30px;">
-        <label>Review Count</label>
-        <input type="text" name="reviewCnt" class="form-control" readonly th:value="${feedDTO.reviewCnt}">
-      </div>
-      <div style="margin-bottom: 30px;">
-        <label>Average</label>
-        <input type="text" name="avg" readonly class="form-control" th:value="${feedDTO.avg}">
-      </div>
-      <div class="form-group">
-        <label>RegDate</label>
-        <input type="text" class="form-control"
-               th:value="${#temporals.format(feedDTO.regDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
-      </div>
-      <div class="form-group">
-        <label>ModDate</label>
-        <input type="text" class="form-control"
-               th:value="${#temporals.format(feedDTO.modDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
-      </div>
-      <div class="form-group">
-        <label for="fileInput">Select Image Files</label>
-        <input type="file" id="fileInput" class="custom-file-input form-control files"
-               multiple></input>
-        <label id="custom-label"></label>
-      </div>
-      <div class="box"></div>
-      <div class="form-group">
-        <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
-        <input type="hidden" name="type" th:value="${pageRequestDTO.type}">
-        <input type="hidden" name="keyword" th:value="${pageRequestDTO.keyword}">
-        <button class="btn btn-primary btnModi">Modify</button>
-        <button class="btn btn-danger btnDele">Delete</button>
-        <button class="btn btn-info btnBack">Back</button>
-      </div>
-    </form>
-    <div class="uploadResult">
-      <ul>
-        <li th:each="feedImageDTO : ${feedDTO.imageDTOList}"
-            th:data-path='${feedImageDTO.path}'
-            th:data-uuid='${feedImageDTO.uuid}'
-            th:data-file='${feedImageDTO.getImageURL}'
-            th:data-name='${feedImageDTO.imgName}'
-            style="cursor:pointer;">
-          <div>
-            <button type="button"
-                    th:onclick="deleteFileDb(this)">X
-            </button>
-            <img
-                th:if="${feedImageDTO.path != null}"
-                th:src="|@{/display(fileName=${feedImageDTO.getThumbnailURL})}|">
-          </div>
-        </li>
-      </ul>
     </div>
+    <div class="col-md-6">
+      <h1 class="display-5 fw-bolder">Feed Modify Page</h1>
+      <form th:action="@{/feed/modify}" th:method="post" id="frmSend">
+        <div class="form-group">
+          <label>Fno</label>
+          <input type="text" th:value="${feedDTO.fno}" name="fno" class="form-control" readonly>
+        </div>
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" name="title" th:value="${feedDTO.title}" class="form-control">
+        </div>
+        <div style="margin-bottom: 30px;">
+          <label>Review Count</label>
+          <input type="text" name="reviewCnt" class="form-control" readonly th:value="${feedDTO.reviewCnt}">
+        </div>
+        <div class="form-group">
+          <label>RegDate</label>
+          <input type="text" class="form-control"
+                 th:value="${#temporals.format(feedDTO.regDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+        </div>
+        <div class="form-group">
+          <label>ModDate</label>
+          <input type="text" class="form-control"
+                 th:value="${#temporals.format(feedDTO.modDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+        </div>
+        <div class="form-group">
+          <label for="fileInput">Select Image Files</label>
+          <input type="file" id="fileInput" class="custom-file-input form-control files"
+                 multiple></input>
+          <label id="custom-label"></label>
+        </div>
+        <div class="box"></div>
+        <div class="form-group">
+          <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
+          <input type="hidden" name="type" th:value="${pageRequestDTO.type}">
+          <input type="hidden" name="keyword" th:value="${pageRequestDTO.keyword}">
+          <button class="btn btn-primary btnModi">Modify</button>
+          <button class="btn btn-danger btnDele">Delete</button>
+          <button class="btn btn-info btnBack">Back</button>
+        </div>
+      </form>
+    </div>
+
     <script th:inline="javascript">
       function checkExtension(fileName, fileSize){
         maxSize = 1024*1024*10;

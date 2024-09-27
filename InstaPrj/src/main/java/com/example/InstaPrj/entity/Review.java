@@ -17,7 +17,7 @@ public class Review extends BasicEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   private Feed feed;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY,  cascade = CascadeType.PERSIST)
   private ClubMember clubMember;
 
   private int grade;

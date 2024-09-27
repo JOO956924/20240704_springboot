@@ -10,7 +10,7 @@ import com.example.InstaPrj.entity.Review;
 import java.util.List;
 
 public interface ReviewService {
-  List<ReviewDTO> getListOfFeed(Long mno);
+  List<ReviewDTO> getListOfFeed(Long fno);
   
   Long register(ReviewDTO reviewDTO);
 

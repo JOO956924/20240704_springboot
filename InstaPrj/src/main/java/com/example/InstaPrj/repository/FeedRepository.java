@@ -53,4 +53,5 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, SearchReposit
       "where f.fno = :fno group by p ")
   List<Object[]> getFeedWithAll(Long fno); //특정 영화 조회
 
+
 }

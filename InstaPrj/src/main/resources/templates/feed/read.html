@@ -13,17 +13,11 @@
     object-fit: cover;border-radius: 10px;
   }
 
-  /* 하트 아이콘 스타일 */
-  .heart {
-    font-size: 2rem;
-    color: #ddd;
-    cursor: pointer;
-    transition: color 0.3s ease-in-out;
-  }
-
-  .heart.active {
-    color: #e0245e; /* 인스타그램 좋아요 색상 */
-  }
+  .star {position: relative;font-size: 2rem;color: #ddd;}
+  .star input {width: 100%;height: 100%;position: absolute;left: 0;
+    opacity: 0;cursor: pointer;}
+  .star span {width: 0;position: absolute; left: 0;color: red;
+    overflow: hidden;pointer-events: none;}
 </style>
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
   <th:block th:fragment="content">
@@ -75,6 +69,9 @@
                 <span class="ms-3" style="font-size:9pt">Review :
                   <span id="revCnt" th:text="${feedDTO.reviewCnt}"></span> 개
                 </span>
+                <span class="ms-3" style="font-size:20pt">
+                  <span id="starRevCnt"></span>★
+                </span>
               </h5>
             </div>
           </div>
@@ -100,13 +97,17 @@
         </div>
       </div>
     </div>
-
     <script th:inline="javascript">
-      // 좋아요 버튼 처리
-      function toggleHeart(heartElement) {
-        heartElement.classList.toggle('active');
+      // 별점 처리
+      function drawStar(target) {
+        if (target.value == 0) {
+          document.querySelector('.star span').style.width = '0%';
+        } else {
+          document.querySelector('.star span').style.width = `${target.value * 100}%`;
+        }
       }
 
+      // window.onload : document의 태그를 모두 읽고 난뒤 실행되는 함수
       window.onload = function(){
         var fno = [[${feedDTO.fno}]]
         loadReviewJSON();
@@ -134,30 +135,33 @@
           .then(response => response.json())
           .then(data => {
             let str = "";
+            let starredReviewCount = 0;
             for(let i=0;i<data.length;i++) {
-              str += `<div class="card-body form-control mb-1"
+              let starDisplay = data[i].grade > 0 ? "★" : "";
+              if (data[i].grade > 0) {
+                starredReviewCount++;
+              }
+              str = str + `<div class="card-body form-control mb-1"
               onmouseover="this.style.background='#d6e6ff'"
               onmouseout="this.style.background='white'"
               data-mid="${data[i].mid}" data-text="${data[i].text}"
-              data-grade="${data[i].grade}" data-name="${data[i].name}"
-              data-email="${data[i].email}" data-reviewnum="${data[i].reviewnum}"
+              data-grade="${data[i].grade}"
+              data-reviewnum="${data[i].reviewnum}"
               style="padding: 5px 20px;cursor:pointer;">
                 <div style="display:inline-block;width:68%;">
                   <h6 style="display:inline-block;width:70px">${data[i].reviewnum}</h6>
-                  <h5 class="card-text" style="display:inline-block;">${data[i].text}
-                  <span class="heart" onclick="toggleHeart(this)">&#9829;</span>
-                  </h5>
+                  <h5 class="card-text" style="display:inline-block;">${data[i].text} ${starDisplay}</h5>
+
                 </div>
                 <div style="display:inline-block;width:30%;text-align: right;right-padding:12px;">
-                  <span class="card-subtitle text-muted" style="font-size:10px">${data[i].name} /
-                   ${data[i].email}</span>
                   <span class="card-subtitle text-muted"
                   style="display:inline-block;width:150px;color:rgb(148 163 184);font-size:12px;"
                   >${formatDateTime(data[i].regDate)}</span>
                 </div>
-              </div>`
+              </div>`;
             }
             listGroup.innerHTML = str
+            document.querySelector("#starRevCnt").textContent = starredReviewCount;
             const cardBody = document.querySelectorAll(".card-body")
             for(let i=0;i<cardBody.length;i++) {
               // 리뷰 상세보기
@@ -171,9 +175,10 @@
                 document.querySelector(".modal-body").innerHTML =
                   `<input type="hidden" name="reviewnum" value="${reviewnum}" readonly>
                    <input type="hidden" name="mid" value="${mid}" readonly>
-                   <label id="notice">Review Text</label><br>
+                   <label id="notice">Grade</label><span class="star">★<span>★</span>
+                   <input type="range" oninput="drawStar(this)" value="1" step="1" min="0">
+                   </span><br>
                    <input type="text" class="form-control" name="text" value="${text}">
-                   <span class="heart mt-3" onclick="toggleHeart(this)">&#9829;</span>
                   `
                 document.querySelector(".modal-footer").innerHTML =
                   `<button type="button" class="btn btn-danger remove">리뷰 삭제</button>
@@ -184,7 +189,8 @@
                   let reviewnum = document.querySelector(".modal-body input[name='reviewnum']")
                   let text = document.querySelector(".modal-body input[name='text']")
                   let mid = document.querySelector(".modal-body input[name='mid']")
-                  let grade = document.querySelector('.heart').classList.contains('active') ? 1 : 0;
+                  let grade = parseFloat(document.querySelector(".star span").style.width)*1*1;
+                  let notice = document.querySelector('#notice')
 
                   if(!text.value) {
                     text.setAttribute('placeholder','댓글입력하세요');text.focus();return;}
@@ -226,7 +232,7 @@
                   })
                   .catch(err => console.log('myError', err))
                 }
-                document.querySelector('.heart').classList.toggle('active', grade === 1);
+                document.querySelector('.star span').style.width = `${grade * 100}%`
                 myModal.show()
               }
             }
@@ -251,9 +257,10 @@
           document.querySelector(".modal-body").innerHTML =
             `
             <input type="text" class="form-control" name="mid" placeholder="Member ID(mid)">
-            <label id="notice">Review Text</label><br>
+            <label id="notice">Grade</label> <span class="star">★<span>★</span>
+                   <input type="range" oninput="drawStar(this)" value="1" step="1" min="0">
+                   </span><br>
             <input type="text" class="form-control" name="text" placeholder="Review Text...">
-            <span class="heart mt-3" onclick="toggleHeart(this)">&#9829;</span>
             `
           document.querySelector(".modal-footer").innerHTML =
             `
@@ -264,7 +271,8 @@
           document.querySelector(".modal-footer .save").onclick = function () {
             let mid = document.querySelector(".modal-body input[name='mid']")
             let text = document.querySelector(".modal-body input[name='text']")
-            let grade = document.querySelector('.heart').classList.contains('active') ? 1 : 0;
+            let grade = parseFloat(document.querySelector(".star span").style.width)*1*1;
+            let notice = document.querySelector('#notice')
 
             if(!text.value) {
               text.setAttribute('placeholder','댓글입력하세요');text.focus();return;}
@@ -306,5 +314,7 @@
 
     </script>
   </th:block>
+
 </th:block>
+
 </html>
