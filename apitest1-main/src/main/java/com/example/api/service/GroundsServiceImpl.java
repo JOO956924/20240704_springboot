@@ -52,17 +52,33 @@ public class GroundsServiceImpl implements GroundsService {
   @Override
   public PageResultDTO<GroundsDTO, Object[]> getList(PageRequestDTO pageRequestDTO) {
     Pageable pageable = pageRequestDTO.getPageable(Sort.by("gno").descending());
-    Page<Object[]> result = groundsRepository.searchPage(pageRequestDTO.getType(),
+    Page<Object[]> result = groundsRepository.searchPage(
+        pageRequestDTO.getType(),
         pageRequestDTO.getKeyword(),
-        pageable);
-    Function<Object[], GroundsDTO> fn = objects -> entityToDto(
-        (Grounds) objects[0],
-        (List<Gphotos>) (Arrays.asList((Gphotos) objects[1])),
-        (Long) objects[2],
-        (Long) objects[3]
+        pageable
     );
+
+    Function<Object[], GroundsDTO> fn = objects -> {
+      Grounds grounds = (Grounds) objects[0];
+      List<Gphotos> gphotosList = new ArrayList<>();
+      if (objects[1] != null) {
+        Gphotos gphoto = (Gphotos) objects[1];
+        gphotosList.add(gphoto);
+      }
+      Long nowpeople = null;
+      Long reviewsCnt = null;
+      if (objects[2] instanceof Number) {
+        nowpeople = ((Number) objects[2]).longValue();
+      }
+      if (objects[3] instanceof Number) {
+        reviewsCnt = ((Number) objects[3]).longValue();
+      }
+      return entityToDto(grounds, gphotosList, nowpeople, reviewsCnt);
+    };
+
     return new PageResultDTO<>(result, fn);
   }
+
 
   @Override
   public GroundsDTO getGrounds(Long gno) {
@@ -71,9 +87,9 @@ public class GroundsServiceImpl implements GroundsService {
     List<Gphotos> gphotos = new ArrayList<>();
     result.forEach(objects -> gphotos.add((Gphotos) objects[1]));
     Long nowpeople = (Long) result.get(0)[2];
-    Long reviewsCnt = (Long) result.get(0)[3];
+    Long groundsreviewsCnt = (Long) result.get(0)[3];
 
-    return entityToDto(grounds, gphotos, nowpeople, reviewsCnt);
+    return entityToDto(grounds, gphotos, nowpeople, groundsreviewsCnt);
   }
 
   @Value("${com.example.upload.path}")

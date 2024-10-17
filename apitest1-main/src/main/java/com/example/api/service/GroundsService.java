@@ -6,6 +6,7 @@ import com.example.api.dto.PageResultDTO;
 import com.example.api.dto.GphotosDTO;
 import com.example.api.entity.Grounds;
 import com.example.api.entity.Gphotos;
+import org.apache.ibatis.jdbc.Null;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,32 +60,31 @@ public interface GroundsService {
   }
 
   default GroundsDTO entityToDto(Grounds grounds, List<Gphotos> gphotosList, Long nowpeople, Long reviewsCnt) {
-    // GroundsDTO 생성
     GroundsDTO groundsDTO = GroundsDTO.builder()
         .gno(grounds.getGno())
-        .gtitle(grounds.getGtitle()) // 구장 제목
-        .location(grounds.getLocation()) // 구장 위치
-        .sports(grounds.getSports()) // 스포츠 종류
-        .price(grounds.getPrice()) // 가격
-        .regDate(grounds.getRegDate()) // 등록일
-        .modDate(grounds.getModDate()) // 수정일
+        .gtitle(grounds.getGtitle())
+        .location(grounds.getLocation())
+        .sports(grounds.getSports())
+        .price(grounds.getPrice())
+        .regDate(grounds.getRegDate())
+        .modDate(grounds.getModDate())
         .build();
 
-    // GphotosDTO 리스트 변환
     List<GphotosDTO> gphotosDTOList = new ArrayList<>();
     if (gphotosList != null && !gphotosList.isEmpty()) {
-      gphotosDTOList = gphotosList.stream().map(gphotos -> {
-        GphotosDTO gphotosDTO = GphotosDTO.builder()
-            .gphotosName(gphotos.getGphotosName())
-            .path(gphotos.getPath())
-            .uuid(gphotos.getUuid())
-            .build();
-        return gphotosDTO;
-      }).collect(Collectors.toList());
+      gphotosDTOList = gphotosList.stream()
+          .filter(gphotos -> gphotos != null)
+          .map(gphotos -> GphotosDTO.builder()
+              .gphotosName(gphotos.getGphotosName())
+              .path(gphotos.getPath())
+              .uuid(gphotos.getUuid())
+              .build())
+          .collect(Collectors.toList());
     }
 
-    groundsDTO.setGphotosDTOList(gphotosDTOList); // 사진 목록 설정
+    groundsDTO.setGphotosDTOList(gphotosDTOList);
     return groundsDTO;
   }
+
 
 }

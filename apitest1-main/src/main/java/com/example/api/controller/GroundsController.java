@@ -42,7 +42,7 @@ public class GroundsController {
   }
 
   @PostMapping(value = "/register")
-  public ResponseEntity<Long> registerGrounds(@RequestBody GroundsDTO groundsDTO) {
+  public ResponseEntity<Long> register(@RequestBody GroundsDTO groundsDTO) {
     Long gno = groundsService.register(groundsDTO);
     return new ResponseEntity<>(gno, HttpStatus.OK);
   }
