@@ -42,7 +42,7 @@ public class GroundsReviewServiceImpl implements GroundsReviewService {
     Optional<GroundsReviews> result = groundsReviewsRepository.findById(groundsReviewsDTO.getGrno());
     if (result.isPresent()) {
       GroundsReviews groundsReviews = result.get();
-      groundsReviews.changeReservation(groundsReviewsDTO.getReservation());
+      groundsReviews.changenowpeople(groundsReviewsDTO.getNowpeople());
       groundsReviewsRepository.save(groundsReviews);
     }
   }

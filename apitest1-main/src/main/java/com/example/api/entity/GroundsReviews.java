@@ -22,12 +22,13 @@ public class GroundsReviews {
   @ManyToOne(fetch = FetchType.LAZY)
   private Members members;
 
-  private String maxpeople; // 최대 신청 가능한 인원수   ex 18
-  private String nowpeople; // 현재 신청 한 인원수      ex 18
-  private String reservation; // 예약마감 상태         ex 마감
-  private String groundsTime; // 경기 시작 시간
-  private LocalDateTime regDate,modDate;
-  public void changeReservation(String reservation) {this.reservation = reservation;}
+  private int maxpeople; // 최대 신청 가능한 인원수   ex 18
+  private int nowpeople; // 현재 신청 한 인원수      ex 18
+
+  private LocalDateTime regDate;
+  private LocalDateTime modDate;
+
+  public void changenowpeople(int nowpeople) {this.nowpeople = nowpeople;}
 
 }
 

@@ -15,10 +15,9 @@ public class GroundsReviewsDTO {
   private Long greviewsnum;
   private Long grno; // Grounds
   private Long mid; // 구장 id
-  private String maxpeople;
-  private String nowpeople;
-  private String reservation;
-  private String groundsTime;
+  private int maxpeople;
+  private int nowpeople;
+
 
   private String email; // 구장 id
   private Integer likes;

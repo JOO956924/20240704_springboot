@@ -35,6 +35,7 @@ public interface GroundsService {
         .location(groundsDTO.getLocation())
         .sports(groundsDTO.getSports())
         .price(groundsDTO.getPrice())
+        .groundsTime(groundsDTO.getGroundsTime())
         .build();
 
     entityMap.put("grounds", grounds);
@@ -59,13 +60,14 @@ public interface GroundsService {
     return entityMap;
   }
 
-  default GroundsDTO entityToDto(Grounds grounds, List<Gphotos> gphotosList, Long nowpeople, Long reviewsCnt) {
+  default GroundsDTO entityToDto(Grounds grounds, List<Gphotos> gphotosList, Long nowpeople, Long greviewsCnt) {
     GroundsDTO groundsDTO = GroundsDTO.builder()
         .gno(grounds.getGno())
         .gtitle(grounds.getGtitle())
         .location(grounds.getLocation())
         .sports(grounds.getSports())
         .price(grounds.getPrice())
+        .groundsTime(grounds.getGroundsTime())
         .regDate(grounds.getRegDate())
         .modDate(grounds.getModDate())
         .build();
@@ -83,6 +85,8 @@ public interface GroundsService {
     }
 
     groundsDTO.setGphotosDTOList(gphotosDTOList);
+    groundsDTO.setGrivewsCnt(greviewsCnt);
+
     return groundsDTO;
   }
 

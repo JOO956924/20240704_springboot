@@ -22,8 +22,6 @@ public interface GroundsReviewService {
         .members(Members.builder().mid(groundsReviewsDTO.getMid()).build())
         .maxpeople(groundsReviewsDTO.getMaxpeople())
         .nowpeople(groundsReviewsDTO.getNowpeople())
-        .reservation(groundsReviewsDTO.getReservation())
-        .groundsTime(groundsReviewsDTO.getGroundsTime())
         .build();
     return groundsReviews;
   }

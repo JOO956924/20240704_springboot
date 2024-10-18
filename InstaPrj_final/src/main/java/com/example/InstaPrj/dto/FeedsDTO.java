@@ -1,4 +1,4 @@
-package com.example.api.dto;
+package com.example.InstaPrj.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,16 +13,13 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroundsDTO {
-  private Long gno;
-  private String gtitle;
+public class FeedsDTO {
+  private Long fno;
+  private String title;
   @Builder.Default // @AllArgsConstructor가 없으면 에러,기본값초기화
-  private List<GphotosDTO> gphotosDTOList = new ArrayList<>();
-  private String location;
-  private String sports;
-  private int price;
-  private String groundsTime;
-  private Long grivewsCnt;
+  private List<PhotosDTO> photosDTOList = new ArrayList<>();
+  private double likes;
+  private Long reviewsCnt;
   private LocalDateTime regDate;
   private LocalDateTime modDate;
 }
