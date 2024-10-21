@@ -26,8 +26,6 @@ class GroundsReviewsRepositoryTests {
       GroundsReviews groundsReviews = GroundsReviews.builder()
           .members(Members.builder().mid(mid).build())
           .grounds(Grounds.builder().gno(gno).build())
-          .nowpeople(0)
-          .maxpeople(11)
           .build();
       groundsReviewsRepository.save(groundsReviews);
     });

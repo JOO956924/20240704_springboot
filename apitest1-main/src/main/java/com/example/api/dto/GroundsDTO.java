@@ -23,6 +23,8 @@ public class GroundsDTO {
   private int price;
   private String groundsTime;
   private Long grivewsCnt;
+  private int nowpeople;
+  private int maxpeople;
   private LocalDateTime regDate;
   private LocalDateTime modDate;
 }

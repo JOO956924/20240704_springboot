@@ -20,8 +20,6 @@ public interface GroundsReviewService {
         .grno(groundsReviewsDTO.getGrno())
         .grounds(Grounds.builder().gno(groundsReviewsDTO.getGrno()).build())
         .members(Members.builder().mid(groundsReviewsDTO.getMid()).build())
-        .maxpeople(groundsReviewsDTO.getMaxpeople())
-        .nowpeople(groundsReviewsDTO.getNowpeople())
         .build();
     return groundsReviews;
   }
@@ -32,8 +30,6 @@ public interface GroundsReviewService {
         .grno(groundsReviews.getGrounds().getGno())
         .mid(groundsReviews.getMembers().getMid())
         .email(groundsReviews.getMembers().getEmail())
-        .maxpeople(groundsReviews.getMaxpeople())
-        .nowpeople(groundsReviews.getNowpeople())
         .regDate(groundsReviews.getRegDate())
         .modDate(groundsReviews.getModDate())
         .build();

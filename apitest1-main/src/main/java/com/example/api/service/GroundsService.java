@@ -36,6 +36,8 @@ public interface GroundsService {
         .sports(groundsDTO.getSports())
         .price(groundsDTO.getPrice())
         .groundsTime(groundsDTO.getGroundsTime())
+        .nowpeople(groundsDTO.getNowpeople())
+        .maxpeople(groundsDTO.getMaxpeople())
         .build();
 
     entityMap.put("grounds", grounds);
@@ -68,6 +70,8 @@ public interface GroundsService {
         .sports(grounds.getSports())
         .price(grounds.getPrice())
         .groundsTime(grounds.getGroundsTime())
+        .nowpeople(grounds.getNowpeople())
+        .maxpeople(grounds.getMaxpeople())
         .regDate(grounds.getRegDate())
         .modDate(grounds.getModDate())
         .build();

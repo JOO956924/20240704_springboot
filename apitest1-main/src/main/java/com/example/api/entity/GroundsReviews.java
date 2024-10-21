@@ -22,13 +22,12 @@ public class GroundsReviews {
   @ManyToOne(fetch = FetchType.LAZY)
   private Members members;
 
-  private int maxpeople; // 최대 신청 가능한 인원수   ex 18
-  private int nowpeople; // 현재 신청 한 인원수      ex 18
+
 
   private LocalDateTime regDate;
   private LocalDateTime modDate;
 
-  public void changenowpeople(int nowpeople) {this.nowpeople = nowpeople;}
+
 
 }
 

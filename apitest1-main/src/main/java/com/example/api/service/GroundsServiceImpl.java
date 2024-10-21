@@ -103,6 +103,7 @@ public class GroundsServiceImpl implements GroundsService {
       Map<String, Object> entityMap = dtoToEntity(groundsDTO);
       Grounds grounds = (Grounds) entityMap.get("grounds");
       grounds.changeTitle(groundsDTO.getGtitle());
+      grounds.changenowpeople(groundsDTO.getNowpeople());
       groundsRepository.save(grounds);
       // gphotosList :: 수정창에서 이미지 수정할 게 있는 경우의 목록
       List<Gphotos> newGphotosList =

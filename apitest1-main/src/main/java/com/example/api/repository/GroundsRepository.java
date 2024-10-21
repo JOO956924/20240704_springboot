@@ -18,7 +18,7 @@ public interface GroundsRepository extends JpaRepository<Grounds, Long>, Gsearch
 //  group by f.fno;
 
   // 경기 게시판에 대한 리뷰의 현재 신청한 인원 수를 출력
-  @Query("select g, count(r.nowpeople), count(distinct r) " +
+  @Query("select g, count(g.nowpeople), count(distinct r) " +
       "from Grounds g left outer join GroundsReviews r on r.grounds=g group by g ")
   Page<Object[]> getListPage(Pageable pageable);
 
@@ -31,14 +31,14 @@ public interface GroundsRepository extends JpaRepository<Grounds, Long>, Gsearch
 //  Page<Object[]> getListPageImg(Pageable pageable);
 
   // spring 3.x에서는 실행 안됨.
-  @Query("select g,max(p),count(r.nowpeople),count(distinct r) from Grounds g  " +
+  @Query("select g,max(p),count(g.nowpeople),count(distinct r) from Grounds g  " +
       "left outer join Gphotos p on p.grounds = g " +
       "left outer join GroundsReviews     r  on r.grounds  = g group by g ")
   Page<Object[]> getListPageMaxImg(Pageable pageable);
 
   // Native Query = SQL
   @Query(value = "select g.gno, p.gpnum, p.gphotos_name, " +
-      "r.members,count(r.nowpeople),r.maxpelple,r.reservation,r.groundsTime " +
+      "r.members,count(g.nowpeople),r.maxpelple,r.reservation,r.groundsTime " +
       "from db7.gphotos p left outer join db7.grounds g on g.gno=p.grounds_gno " +
       "left outer join db7.GroundsReviews r on g.gno=r.grounds_gno " +
       "where p.gpnum = " +
@@ -47,7 +47,7 @@ public interface GroundsRepository extends JpaRepository<Grounds, Long>, Gsearch
   Page<Object[]> getListPageImgNative(Pageable pageable);
 
   // JPQL
-  @Query("select g, p, count(r.nowpeople), count(distinct r) from Grounds g " +
+  @Query("select g, p, count(g.nowpeople), count(distinct r) from Grounds g " +
       "left outer join Gphotos p on p.grounds = g " +
       "left outer join GroundsReviews     r  on r.grounds  = g " +
       "where gpnum = (select max(p2.gpnum) from Gphotos p2 where p2.grounds=g) " +
@@ -57,7 +57,7 @@ public interface GroundsRepository extends JpaRepository<Grounds, Long>, Gsearch
   @Query("select grounds, max(p.gpnum) from Gphotos p group by grounds")
   Page<Object[]> getMaxQuery(Pageable pageable);
 
-  @Query("select g, p, count(r.nowpeople), count(r) " +
+  @Query("select g, p, count(g.nowpeople), count(r) " +
       "from Grounds g left outer join Gphotos p on p.grounds=g " +
       "left outer join GroundsReviews r on r.grounds = g " +
       "where g.gno = :gno group by p ")
